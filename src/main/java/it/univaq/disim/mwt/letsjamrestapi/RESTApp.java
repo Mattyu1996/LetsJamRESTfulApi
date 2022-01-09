@@ -1,5 +1,16 @@
 package it.univaq.disim.mwt.letsjamrestapi;
 
+import it.univaq.disim.mwt.letsjamrestapi.resources.AuthApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.CommentApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.GenresApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.InstrumentsApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.JacksonJsonProvider;
+import it.univaq.disim.mwt.letsjamrestapi.resources.MusicsheetApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.MusicsheetsApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.ScoreApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.SongApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.SongsApi;
+import it.univaq.disim.mwt.letsjamrestapi.resources.UserApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.UsersApi;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,13 +32,21 @@ public class RESTApp extends Application {
         //aggiungiamo tutte le *root resurces* (cioè quelle
         //con l'annotazione Path) che vogliamo pubblicare
         c.add(UsersApi.class);
-        //c.add(StudentiRes.class);
-        //c.add(CorsiRes.class);
-
+        c.add(UserApi.class);
+        c.add(SongsApi.class);
+        c.add(SongApi.class);
+        c.add(ScoreApi.class);
+        c.add(MusicsheetApi.class);
+        c.add(MusicsheetsApi.class);
+        c.add(InstrumentsApi.class);
+        c.add(GenresApi.class);
+        c.add(CommentApi.class);
+        c.add(AuthApi.class);
+        
         //aggiungiamo il provider Jackson per poter
         //usare i suoi servizi di serializzazione e 
         //deserializzazione JSON
-        //c.add(JacksonJsonProvider.class);
+        c.add(JacksonJsonProvider.class);
 
         //necessario se vogliamo una (de)serializzazione custom di qualche classe    
         //c.add(ObjectMapperContextResolver.class);

@@ -150,25 +150,6 @@ public class MusicsheetApi {
     }
 
     @GET
-    @Path("/{musicsheetTitle}")
-    @Produces({ "application/json", "text/plain" })
-    @Operation(summary = "Gets musicsheet by id", description = "", security = {
-            @SecurityRequirement(name = "bearerAuth") }, tags = { "musicsheet" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful Operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MusicSheet.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid title supplied"),
-            @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
-            @ApiResponse(responseCode = "404", description = "Element not found", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
-    })
-    public Response getMusicSheetByTitle(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetTitle") String musicsheetTitle,
-            @Context SecurityContext securityContext)
-            throws NotFoundException {
-        return delegate.getMusicSheetByTitle(musicsheetTitle, securityContext);
-    }
-
-    @GET
     @Path("/{musicsheetId}/comments")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets all the comments for the specified musicsheet", description = "", security = {

@@ -13,7 +13,20 @@ import it.univaq.disim.mwt.letsjamrestapi.services.UsersApiService;
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public class UsersApiServiceImpl extends UsersApiService {
     @Override
-    public Response getAllUsers(SecurityContext securityContext) throws NotFoundException {
+    public Response getAllUsers(String email,  String username,  String role, SecurityContext securityContext) throws NotFoundException {
+        
+        if(email != null && !email.isEmpty()){
+            // getUserByEmail
+        }
+        else if(username != null && !username.isEmpty()){
+            // getUserByUsername
+        }
+        else if(role != null && !role.isEmpty()){
+            // getUserByRole
+        }
+        else{
+            //getAllUsers
+        } 
 
         List<User> utenti = new ArrayList<User>();
         User a = new User();

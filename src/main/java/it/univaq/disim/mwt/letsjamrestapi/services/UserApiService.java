@@ -19,12 +19,7 @@ public abstract class UserApiService {
     public abstract Response deleteUserById(@DecimalMin("1") BigDecimal userId, SecurityContext securityContext)
             throws NotFoundException;
 
-    public abstract Response getUserByEmail(String email, SecurityContext securityContext) throws NotFoundException;
-
     public abstract Response getUserById(@DecimalMin("1") BigDecimal userId, SecurityContext securityContext)
-            throws NotFoundException;
-
-    public abstract Response getUserByUsername(String username, SecurityContext securityContext)
             throws NotFoundException;
 
     public abstract Response getUserPreferredGenres(@DecimalMin("1") BigDecimal userId, SecurityContext securityContext)

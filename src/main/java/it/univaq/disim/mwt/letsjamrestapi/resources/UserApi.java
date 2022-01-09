@@ -107,25 +107,7 @@ public class UserApi {
             throws NotFoundException {
         return delegate.deleteUserById(userId, securityContext);
     }
-
-    @GET
-    @Path("/{email}")
-    @Produces({ "application/json", "text/plain" })
-    @Operation(summary = "Gets user by user email", description = "", security = {
-            @SecurityRequirement(name = "bearerAuth") }, tags = { "user" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful Operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid Email supplied"),
-            @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
-            @ApiResponse(responseCode = "404", description = "Element not found", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))) })
-    public Response getUserByEmail(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("email") String email,
-            @Context SecurityContext securityContext)
-            throws NotFoundException {
-        return delegate.getUserByEmail(email, securityContext);
-    }
-
+    
     @GET
     @Path("/{userId}")
     @Produces({ "application/json", "text/plain" })
@@ -143,25 +125,6 @@ public class UserApi {
             @Context SecurityContext securityContext)
             throws NotFoundException {
         return delegate.getUserById(userId, securityContext);
-    }
-
-    @GET
-    @Path("/{username}")
-    @Produces({ "application/json", "text/plain" })
-    @Operation(summary = "Gets user by user name", description = "", security = {
-            @SecurityRequirement(name = "bearerAuth") }, tags = { "user" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful Operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid Username supplied"),
-            @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
-            @ApiResponse(responseCode = "404", description = "Element not found", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
-    })
-    public Response getUserByUsername(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("username") String username,
-            @Context SecurityContext securityContext)
-            throws NotFoundException {
-        return delegate.getUserByUsername(username, securityContext);
     }
 
     @GET

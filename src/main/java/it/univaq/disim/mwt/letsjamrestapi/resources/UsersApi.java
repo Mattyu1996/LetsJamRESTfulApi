@@ -1,6 +1,8 @@
 package it.univaq.disim.mwt.letsjamrestapi.resources;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -16,6 +18,7 @@ import javax.servlet.ServletConfig;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -55,7 +58,13 @@ public class UsersApi {
          @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
          @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
    })
-   public Response getAllUsers(@Context SecurityContext securityContext) throws NotFoundException {
-      return delegate.getAllUsers(securityContext);
+   public Response getAllUsers(
+         @Parameter(in = ParameterIn.QUERY, description = "Email of the user to get") @QueryParam("email") String email,
+         @Parameter(in = ParameterIn.QUERY, description = "Username of the user to get") @QueryParam("username") String username,
+         @Parameter(in = ParameterIn.QUERY, description = "Filter by user role", schema = @Schema(allowableValues = {
+               "UTENTE", "AMMINISTRATORE" })) @QueryParam("role") String role,
+         @Context SecurityContext securityContext)
+         throws NotFoundException {
+      return delegate.getAllUsers(email, username, role, securityContext);
    }
 }

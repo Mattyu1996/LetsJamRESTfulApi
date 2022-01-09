@@ -48,13 +48,6 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     }
 
     @Override
-    public Response getMusicSheetByTitle(String musicsheetTitle, SecurityContext securityContext)
-            throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
-    }
-
-    @Override
     public Response getMusicSheetComments(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
             throws NotFoundException {
         // do some magic!

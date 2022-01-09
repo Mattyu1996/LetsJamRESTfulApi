@@ -27,9 +27,6 @@ public abstract class MusicsheetApiService {
     public abstract Response getMusicSheetById(@DecimalMin("1") BigDecimal musicsheetId,
             SecurityContext securityContext) throws NotFoundException;
 
-    public abstract Response getMusicSheetByTitle(String musicsheetTitle, SecurityContext securityContext)
-            throws NotFoundException;
-
     public abstract Response getMusicSheetComments(@DecimalMin("1") BigDecimal musicsheetId,
             SecurityContext securityContext) throws NotFoundException;
 
