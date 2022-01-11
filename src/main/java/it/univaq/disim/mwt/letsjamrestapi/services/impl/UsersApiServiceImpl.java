@@ -2,7 +2,6 @@ package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Generated;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -21,11 +20,11 @@ public class UsersApiServiceImpl extends UsersApiService {
         List<User> result = new ArrayList<User>();
 
         if (email != null && !email.isEmpty()) {
-            // getUserByEmail
+            result = UserDBService.getUserByEmail(email);
         } else if (username != null && !username.isEmpty()) {
-            // getUserByUsername
+            result = UserDBService.getUserByUsername(username);
         } else if (role != null && !role.isEmpty()) {
-            // getUserByRole
+            result = UserDBService.getUserByRole(role);
         } else {
             result = UserDBService.getAllUsers();
         }

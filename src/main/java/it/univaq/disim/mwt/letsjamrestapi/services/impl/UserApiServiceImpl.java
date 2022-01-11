@@ -1,6 +1,8 @@
 package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
 import java.math.BigDecimal;
+
+import it.univaq.disim.mwt.letsjamrestapi.business.services.UserDBService;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.UserUserIdBody;
 import it.univaq.disim.mwt.letsjamrestapi.services.UserApiService;
@@ -35,8 +37,7 @@ public class UserApiServiceImpl extends UserApiService {
     @Override
     public Response getUserById(@DecimalMin("1") BigDecimal userId, SecurityContext securityContext)
             throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        return Response.ok().entity(UserDBService.getUserById(userId)).build();
     }
 
     @Override
