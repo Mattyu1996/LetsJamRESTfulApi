@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * UserUserIdBody
  */
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
-public class UserUserIdBody   {
+public class UpdateUserBody   {
   @JsonProperty("firstname")
   private String firstname = null;
 
@@ -31,7 +31,7 @@ public class UserUserIdBody   {
   @JsonProperty("email")
   private String email = null;
 
-  public UserUserIdBody firstname(String firstname) {
+  public UpdateUserBody firstname(String firstname) {
     this.firstname = firstname;
     return this;
   }
@@ -50,7 +50,7 @@ public class UserUserIdBody   {
     this.firstname = firstname;
   }
 
-  public UserUserIdBody lastname(String lastname) {
+  public UpdateUserBody lastname(String lastname) {
     this.lastname = lastname;
     return this;
   }
@@ -69,7 +69,7 @@ public class UserUserIdBody   {
     this.lastname = lastname;
   }
 
-  public UserUserIdBody email(String email) {
+  public UpdateUserBody email(String email) {
     this.email = email;
     return this;
   }
@@ -97,7 +97,7 @@ public class UserUserIdBody   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserUserIdBody userUserIdBody = (UserUserIdBody) o;
+    UpdateUserBody userUserIdBody = (UpdateUserBody) o;
     return Objects.equals(this.firstname, userUserIdBody.firstname) &&
         Objects.equals(this.lastname, userUserIdBody.lastname) &&
         Objects.equals(this.email, userUserIdBody.email);

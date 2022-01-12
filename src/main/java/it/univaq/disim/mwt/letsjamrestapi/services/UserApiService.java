@@ -1,8 +1,9 @@
 package it.univaq.disim.mwt.letsjamrestapi.services;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
-import it.univaq.disim.mwt.letsjamrestapi.models.UserUserIdBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.UpdateUserBody;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.annotation.Generated;
@@ -34,9 +35,9 @@ public abstract class UserApiService {
     public abstract Response removePreferredInstrument(@DecimalMin("1") BigDecimal userId,
             @DecimalMin("1") BigDecimal instrumentId, SecurityContext securityContext) throws NotFoundException;
 
-    public abstract Response updateUserAvatar(@DecimalMin("1") BigDecimal userId, Object body,
+    public abstract Response updateUserAvatar(@DecimalMin("1") BigDecimal userId, InputStream stream,
             SecurityContext securityContext) throws NotFoundException;
 
-    public abstract Response updateUserById(UserUserIdBody body, @DecimalMin("1") BigDecimal userId,
+    public abstract Response updateUserById(UpdateUserBody body, @DecimalMin("1") BigDecimal userId,
             SecurityContext securityContext) throws NotFoundException;
 }

@@ -32,7 +32,6 @@ public class CORSFilter implements ContainerResponseFilter, ContainerRequestFilt
                 responseContext.getHeaders().add(
                                 "Access-Control-Expose-Headers",
                                 "Location,Authorization, *");
-
         }
 
         // ContainerRequestFilter: intercetta e gestisce direttamente le richieste con

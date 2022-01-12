@@ -13,8 +13,10 @@ import it.univaq.disim.mwt.letsjamrestapi.factories.UserApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
-import it.univaq.disim.mwt.letsjamrestapi.models.UserUserIdBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.UpdateUserBody;
 import it.univaq.disim.mwt.letsjamrestapi.services.UserApiService;
+
+import java.io.InputStream;
 import java.math.BigDecimal;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import javax.annotation.Generated;
@@ -220,10 +222,10 @@ public class UserApi {
     })
     public Response updateUserAvatar(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Parameter(in = ParameterIn.DEFAULT, description = "") Object body,
+            @Parameter(in = ParameterIn.DEFAULT, description = "") InputStream stream,
             @Context SecurityContext securityContext)
             throws NotFoundException {
-        return delegate.updateUserAvatar(userId, body, securityContext);
+        return delegate.updateUserAvatar(userId, stream, securityContext);
     }
 
     @PUT
@@ -240,7 +242,7 @@ public class UserApi {
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     public Response updateUserById(
-            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) UserUserIdBody body,
+            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) UpdateUserBody body,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Context SecurityContext securityContext)
             throws NotFoundException {
