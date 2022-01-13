@@ -265,4 +265,28 @@ public class UserDBService {
             e.printStackTrace();
         }
     }
+
+    public static void addLike(BigDecimal userId, BigDecimal musicsheetId){
+        Connection c = Database.getConnection();
+        try {
+            PreparedStatement st = c.prepareStatement("INSERT INTO spartiti_likes (music_sheet_id, user_id) VALUES(?,?)");
+            st.setLong(1, musicsheetId.longValue());
+            st.setLong(2, userId.longValue());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void removeLike(BigDecimal userId, BigDecimal musicsheetId){
+        Connection c = Database.getConnection();
+        try {
+            PreparedStatement st = c.prepareStatement("DELETE FROM spartiti_likes WHERE user_id = ? AND music_sheet_id = ?");
+            st.setLong(1, userId.longValue());
+            st.setLong(2, musicsheetId.longValue());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

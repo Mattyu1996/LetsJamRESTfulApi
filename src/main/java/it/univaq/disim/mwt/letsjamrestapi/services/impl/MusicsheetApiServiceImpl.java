@@ -1,7 +1,10 @@
 package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
 import java.math.BigDecimal;
+import it.univaq.disim.mwt.letsjamrestapi.business.services.MusicsheetDBService;
+import it.univaq.disim.mwt.letsjamrestapi.business.services.UserDBService;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
+import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetIdCommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetMusicsheetIdBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
@@ -23,8 +26,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     @Override
     public Response addLike(@DecimalMin("1") BigDecimal musicsheetId, @DecimalMin("1") BigDecimal userId,
             SecurityContext securityContext) throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        UserDBService.addLike(userId, musicsheetId);
+        return Response.ok().build();
     }
 
     @Override
@@ -43,8 +46,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     @Override
     public Response getMusicSheetById(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
             throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        MusicSheet spartito = MusicsheetDBService.getMusicsheetById(musicsheetId);
+        return Response.ok().entity(spartito).build();
     }
 
     @Override
@@ -64,8 +67,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     @Override
     public Response removeLike(@DecimalMin("1") BigDecimal musicsheetId, @DecimalMin("1") BigDecimal userId,
             SecurityContext securityContext) throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        UserDBService.removeLike(userId, musicsheetId);
+        return Response.ok().build();
     }
 
     @Override

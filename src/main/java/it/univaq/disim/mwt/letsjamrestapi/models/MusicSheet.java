@@ -52,6 +52,9 @@ public class MusicSheet   {
   @JsonProperty("song")
   private Song song = null;
 
+  @JsonProperty("user")
+  private User user = null;
+
   @JsonProperty("likes")
   private BigDecimal likes = null;
 
@@ -227,6 +230,22 @@ public class MusicSheet   {
     this.song = song;
   }
 
+    /**
+   * Get user
+   * @return user
+   **/
+  @JsonProperty("user")
+  @Schema(required = true, description = "")
+  @NotNull
+  @Valid
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
   public MusicSheet likes(BigDecimal likes) {
     this.likes = likes;
     return this;
@@ -377,5 +396,31 @@ public class MusicSheet   {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
+  }
+
+  public enum SortEnum {
+    TITLE("spartiti.title"),
+    SONGTITLE("brani.title"),
+    CREATEDATETIME("spartiti.create_date_time"),
+    LIKES("likes");
+
+    private String value;
+
+    SortEnum(String value) {
+      this.value = value;
+    }
+
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static SortEnum fromValue(String text) {
+      for (SortEnum b : SortEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
   }
 }

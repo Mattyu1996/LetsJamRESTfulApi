@@ -1,7 +1,10 @@
 package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
 import java.math.BigDecimal;
+
+import it.univaq.disim.mwt.letsjamrestapi.business.services.SongDBService;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
+import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 import it.univaq.disim.mwt.letsjamrestapi.services.SongApiService;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -13,7 +16,7 @@ public class SongApiServiceImpl extends SongApiService {
     @Override
     public Response getSongById(@DecimalMin("1") BigDecimal songId, SecurityContext securityContext)
             throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        Song brano = SongDBService.getSongById(songId);
+        return Response.ok().entity(brano).build();
     }
 }
