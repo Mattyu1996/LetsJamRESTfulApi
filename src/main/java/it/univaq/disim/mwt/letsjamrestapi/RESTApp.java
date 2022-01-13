@@ -52,7 +52,7 @@ public class RESTApp extends Application {
 
         //necessario se vogliamo una (de)serializzazione custom di qualche classe    
         //c.add(ObjectMapperContextResolver.class);
-        
+
         //esempio di autenticazione
         //c.add(AuthLevel1Filter.class);
         

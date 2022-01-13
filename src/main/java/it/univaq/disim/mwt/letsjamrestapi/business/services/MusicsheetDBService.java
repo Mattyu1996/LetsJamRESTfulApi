@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.univaq.disim.mwt.letsjamrestapi.business.Database;
+import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 
 public class MusicsheetDBService {
@@ -36,7 +36,7 @@ public class MusicsheetDBService {
     }
 
     public static MusicSheet getMusicsheetById(BigDecimal musicsheetId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             String query = "SELECT *, (SELECT COUNT(music_sheet_id) FROM spartiti_likes WHERE music_sheet_id = ?) as likes FROM spartiti WHERE id = ?";
             PreparedStatement st = c.prepareStatement(query);
@@ -63,7 +63,7 @@ public class MusicsheetDBService {
         List<String> instruments, Boolean verified, 
         Boolean rearranged, Boolean tablature, BigDecimal pageNumber, BigDecimal pageSize){
         
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         String q = "SELECT *, (SELECT COUNT(music_sheet_id) FROM spartiti_likes WHERE music_sheet_id = spartiti.id) as likes FROM spartiti JOIN brani ON song_id = brani.id JOIN generi ON brani.genre_id = generi.id ";
 		if(!instruments.isEmpty()) q+="JOIN spartiti_strumenti ON music_sheet_id = spartiti.id JOIN strumenti ON instrument_id = strumenti.id ";
 		boolean whereClause = false;

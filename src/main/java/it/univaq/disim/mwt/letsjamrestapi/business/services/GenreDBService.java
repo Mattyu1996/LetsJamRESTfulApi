@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.univaq.disim.mwt.letsjamrestapi.business.Database;
+import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 
 public class GenreDBService {
@@ -26,7 +26,7 @@ public class GenreDBService {
     }
 
     public static List<Genre> getAllGenres(){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<Genre> generi = new ArrayList<Genre>();
             String query = "SELECT * FROM generi";
@@ -47,7 +47,7 @@ public class GenreDBService {
     }
     
     public static Genre getGenreById(BigDecimal genreId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<Genre> generi = new ArrayList<Genre>();
             String query = "SELECT * FROM generi WHERE id = ?";

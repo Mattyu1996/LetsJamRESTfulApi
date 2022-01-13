@@ -10,6 +10,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.Set;
+
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.MusicsheetApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
@@ -21,6 +24,7 @@ import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -29,11 +33,9 @@ import javax.ws.rs.*;
 @Path("/musicsheet")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public class MusicsheetApi {
-    private final MusicsheetApiService delegate;
-
+    private final MusicsheetApiService delegate;    
     public MusicsheetApi(@Context ServletConfig servletContext) {
         MusicsheetApiService delegate = null;
-
         if (servletContext != null) {
             String implClass = servletContext.getInitParameter("MusicsheetApi.implementation");
             if (implClass != null && !"".equals(implClass.trim())) {

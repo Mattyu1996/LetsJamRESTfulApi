@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import it.univaq.disim.mwt.letsjamrestapi.business.Database;
+import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
@@ -33,7 +33,7 @@ public class UserDBService {
     }
 
     public static List<User> getAllUsers() {
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<User> utenti = new ArrayList<User>();
             ResultSet rs = c.createStatement().executeQuery("SELECT * FROM utenti");
@@ -52,7 +52,7 @@ public class UserDBService {
     }
 
     public static List<User> getUserByUsername(String username) {
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<User> utenti = new ArrayList<User>();
             PreparedStatement st = c.prepareStatement("SELECT * FROM utenti where username = ?");
@@ -73,7 +73,7 @@ public class UserDBService {
     }
 
     public static List<User> getUserByEmail(String email) {
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<User> utenti = new ArrayList<User>();
             PreparedStatement st = c.prepareStatement("SELECT * FROM utenti where email = ?");
@@ -94,7 +94,7 @@ public class UserDBService {
     }
 
     public static List<User> getUserByRole(String role) {
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<User> utenti = new ArrayList<User>();
             PreparedStatement st = c.prepareStatement("SELECT * FROM utenti where role = ?");
@@ -115,7 +115,7 @@ public class UserDBService {
     }
 
     public static List<User> getUserById(BigDecimal id) {
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<User> utenti = new ArrayList<User>();
             PreparedStatement st = c.prepareStatement("SELECT * FROM utenti where id = ?");
@@ -136,7 +136,7 @@ public class UserDBService {
     }
 
     public static User updateUser(BigDecimal id, UpdateUserBody body) {
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("UPDATE utenti SET firstname = ?, lastname = ?, email = ? WHERE id = ?");
             st.setString(1, body.getFirstname());
@@ -152,7 +152,7 @@ public class UserDBService {
     }
 
     public static void deleteUser(BigDecimal id) {
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("DELETE FROM utenti WHERE id = ?");
             st.setLong(1, id.longValue());
@@ -163,7 +163,7 @@ public class UserDBService {
     }
 
     public static void removeUserPreferredGenre(BigDecimal userId, BigDecimal genreId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("DELETE FROM generi_preferiti WHERE user_id = ? AND genre_id = ?");
             st.setLong(1, userId.longValue());
@@ -175,7 +175,7 @@ public class UserDBService {
     }
 
     public static void addUserPreferredGenre(BigDecimal userId, BigDecimal genreId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("INSERT INTO generi_preferiti (user_id, genre_id) VALUES(?,?)");
             st.setLong(1, userId.longValue());
@@ -187,7 +187,7 @@ public class UserDBService {
     }
 
     public static List<Genre> getUserPreferredGenres(BigDecimal id){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<Genre> generi = new ArrayList<Genre>();
             String query = "SELECT generi.id, name, description FROM utenti JOIN generi_preferiti ON utenti.id = user_id JOIN generi ON genre_id = generi.id WHERE utenti.id = ?";
@@ -209,7 +209,7 @@ public class UserDBService {
     }
 
     public static void removeUserPreferredInstrument(BigDecimal userId, BigDecimal instrumentId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("DELETE FROM strumenti_preferiti WHERE user_id = ? AND instrument_id = ?");
             st.setLong(1, userId.longValue());
@@ -221,7 +221,7 @@ public class UserDBService {
     }
 
     public static void addUserPreferredInstrument(BigDecimal userId, BigDecimal instrumentId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("INSERT INTO strumenti_preferiti (user_id, instrument_id) VALUES(?,?)");
             st.setLong(1, userId.longValue());
@@ -233,7 +233,7 @@ public class UserDBService {
     }
 
     public static List<Instrument> getUserPreferredInstruments(BigDecimal id){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<Instrument> strumenti = new ArrayList<Instrument>();
             String query = "SELECT strumenti.id, name, instrument_key FROM utenti JOIN strumenti_preferiti ON utenti.id = user_id JOIN strumenti ON instrument_id = strumenti.id WHERE utenti.id = ?";
@@ -255,7 +255,7 @@ public class UserDBService {
     }
 
     public static void updateUserAvatar(BigDecimal userId, String avatarPath){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("UPDATE utenti SET avatar = ? WHERE id = ?");
             st.setString(1, avatarPath);
@@ -267,7 +267,7 @@ public class UserDBService {
     }
 
     public static void addLike(BigDecimal userId, BigDecimal musicsheetId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("INSERT INTO spartiti_likes (music_sheet_id, user_id) VALUES(?,?)");
             st.setLong(1, musicsheetId.longValue());
@@ -279,7 +279,7 @@ public class UserDBService {
     }
 
     public static void removeLike(BigDecimal userId, BigDecimal musicsheetId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c.prepareStatement("DELETE FROM spartiti_likes WHERE user_id = ? AND music_sheet_id = ?");
             st.setLong(1, userId.longValue());

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.univaq.disim.mwt.letsjamrestapi.business.Database;
+import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 
 public class InstrumentDBService {
@@ -26,7 +26,7 @@ public class InstrumentDBService {
     }
 
     public static List<Instrument> getAllInstruments(){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<Instrument> strumenti = new ArrayList<Instrument>();
             String query = "SELECT * FROM strumenti";
@@ -47,7 +47,7 @@ public class InstrumentDBService {
     }
 
     public static List<Instrument> getMusicsheetInstruments(BigDecimal musicsheetId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<Instrument> strumenti = new ArrayList<Instrument>();
             String query = "SELECT * FROM strumenti JOIN spartiti_strumenti ON instrument_id = id WHERE music_sheet_id = ?";

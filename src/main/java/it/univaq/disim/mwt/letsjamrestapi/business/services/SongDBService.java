@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.univaq.disim.mwt.letsjamrestapi.business.Database;
+import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 
 public class SongDBService {
@@ -34,7 +34,7 @@ public class SongDBService {
     }
 
     public static Song getSongById(BigDecimal songId){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<Song> brani = new ArrayList<Song>();
             String query = "SELECT * FROM brani WHERE id = ?";
@@ -56,7 +56,7 @@ public class SongDBService {
     }
 
     public static Song getAllSongs(){
-        Connection c = Database.getConnection();
+        Connection c = SqlDb.getConnection();
         try {
             List<Song> brani = new ArrayList<Song>();
             String query = "SELECT * FROM brani";

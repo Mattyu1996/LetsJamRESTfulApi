@@ -1,6 +1,9 @@
 package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
+
+import it.univaq.disim.mwt.letsjamrestapi.business.MongoDb;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.MusicsheetDBService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.UserDBService;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
@@ -9,13 +12,17 @@ import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetIdCommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetMusicsheetIdBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
+
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.annotation.Generated;
+import javax.servlet.ServletContext;
 import javax.validation.constraints.*;
 
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public class MusicsheetApiServiceImpl extends MusicsheetApiService {
+    
     @Override
     public Response addComment(@DecimalMin("1") BigDecimal musicsheetId, MusicsheetIdCommentBody body,
             BigDecimal parent, SecurityContext securityContext) throws NotFoundException {
@@ -60,7 +67,7 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     @Override
     public Response getMusicSheetData(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
             throws NotFoundException {
-        // do some magic!
+        System.out.println(MongoDb.getConnection().getDatabase(MongoDb.DBNAME).getCollection("spartiti").countDocuments()); 
         return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
     }
 
