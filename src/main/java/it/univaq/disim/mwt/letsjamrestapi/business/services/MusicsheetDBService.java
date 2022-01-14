@@ -6,10 +6,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+
+import org.bson.Document;
+
+import it.univaq.disim.mwt.letsjamrestapi.business.MongoDb;
 import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
+import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 
 public class MusicsheetDBService {
     
@@ -175,4 +187,23 @@ public class MusicsheetDBService {
         }
         return null;
 	}
+
+    public static MusicSheetData getMusicsheetData(BigDecimal musicsheetId){
+        MongoClient conn = MongoDb.getConnection();
+        MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", musicsheetId.toString());
+        Document rs = collection.find(query).first();
+        MusicSheetData result = new MusicSheetData();
+        result.setContent(rs.getString("content").toString());
+        Document mapping = (Document) rs.get("instrumentMapping");
+        try {
+            Map<String, String> map =  new ObjectMapper().readValue(mapping.toJson(), HashMap.class);
+            result.setInstrumentMapping(map);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        conn.close();
+        return result;
+    }
 }

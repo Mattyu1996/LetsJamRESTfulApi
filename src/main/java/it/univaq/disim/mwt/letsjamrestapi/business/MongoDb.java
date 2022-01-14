@@ -21,14 +21,12 @@ public class MongoDb {
                     (new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\WEB-INF\\")
                             .getCanonicalPath()),
                     "mongoConfig.properties").getCanonicalPath();
-            System.out.println(filepath);
             Properties props = new Properties();
             props.load(new FileInputStream(new File(filepath)));
             String uri = props.getProperty("uri");
             MongoClient client = new MongoClient(new MongoClientURI(uri));
             return client;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

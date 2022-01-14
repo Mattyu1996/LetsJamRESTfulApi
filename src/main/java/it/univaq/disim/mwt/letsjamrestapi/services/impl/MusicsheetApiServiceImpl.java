@@ -8,6 +8,7 @@ import it.univaq.disim.mwt.letsjamrestapi.business.services.MusicsheetDBService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.UserDBService;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
+import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetIdCommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetMusicsheetIdBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
@@ -16,6 +17,11 @@ import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+
+import com.mongodb.BasicDBObject;
+
+import org.bson.conversions.Bson;
+
 import javax.annotation.Generated;
 import javax.servlet.ServletContext;
 import javax.validation.constraints.*;
@@ -67,8 +73,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     @Override
     public Response getMusicSheetData(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
             throws NotFoundException {
-        System.out.println(MongoDb.getConnection().getDatabase(MongoDb.DBNAME).getCollection("spartiti").countDocuments()); 
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+                MusicSheetData data = MusicsheetDBService.getMusicsheetData(musicsheetId);
+        return Response.ok().entity(data).build();
     }
 
     @Override
