@@ -193,17 +193,24 @@ public class MusicsheetDBService {
         MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
         BasicDBObject query = new BasicDBObject();
         query.put("_id", musicsheetId.toString());
-        Document rs = collection.find(query).first();
-        MusicSheetData result = new MusicSheetData();
-        result.setContent(rs.getString("content").toString());
-        Document mapping = (Document) rs.get("instrumentMapping");
+        Document d = collection.find(query).first();
+        MusicSheetData data = MusicSheetDataMapper.deserialize(d);
+        conn.close();
+        return data;
+    }
+
+    public static void addMusicSheetData(MusicSheetData data, BigDecimal musicsheetId){
+        MongoClient conn = MongoDb.getConnection();
+        MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
         try {
-            Map<String, String> map =  new ObjectMapper().readValue(mapping.toJson(), HashMap.class);
-            result.setInstrumentMapping(map);
-        } catch (JsonProcessingException e) {
+            Document d = new Document();
+            // d.append("_id", musicsheetId.longValue());
+            // d.append("content", data.getContent());
+            // d.append("instrumentMapping", new ObjectMapper().write(data.getInstrumentMapping()));
+            collection.insertOne(MusicSheetDataMapper.serialize(data, musicsheetId));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        conn.close();
-        return result;
     }
 }

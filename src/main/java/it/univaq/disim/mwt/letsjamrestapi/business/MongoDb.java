@@ -22,9 +22,11 @@ public class MongoDb {
                             .getCanonicalPath()),
                     "mongoConfig.properties").getCanonicalPath();
             Properties props = new Properties();
-            props.load(new FileInputStream(new File(filepath)));
+            FileInputStream f = new FileInputStream(new File(filepath));
+            props.load(f);
             String uri = props.getProperty("uri");
             MongoClient client = new MongoClient(new MongoClientURI(uri));
+            f.close();
             return client;
         } catch (Exception e) {
             e.printStackTrace();

@@ -20,6 +20,8 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import org.bson.codecs.BsonTypeClassMap;
+
 /**
  *
  * @author didattica
@@ -61,6 +63,8 @@ public class RESTApp extends Application {
 
         //esempio di exception mapper, che mappa in Response eccezioni non già derivanti da WebApplicationException
         //c.add(AppExceptionMapper.class);
+
+        
         
         classes = Collections.unmodifiableSet(c);
     }

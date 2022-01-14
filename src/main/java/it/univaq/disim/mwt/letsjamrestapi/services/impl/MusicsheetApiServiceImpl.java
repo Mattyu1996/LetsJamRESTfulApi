@@ -72,8 +72,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
 
     @Override
     public Response getMusicSheetData(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
-            throws NotFoundException {
-                MusicSheetData data = MusicsheetDBService.getMusicsheetData(musicsheetId);
+            throws NotFoundException {   
+        MusicSheetData data = MusicsheetDBService.getMusicsheetData(musicsheetId);
         return Response.ok().entity(data).build();
     }
 
