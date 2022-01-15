@@ -6,63 +6,44 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigGateway {
-
-    public static String getMongoUri(){
+    
+    public static String readConfig(String key){
         try {
             String filepath = new File(
-                    (new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\WEB-INF\\")
-                            .getCanonicalPath()),
-                    "config.properties").getCanonicalPath();
+                (new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\WEB-INF\\")
+                        .getCanonicalPath()),
+                "config.properties").getCanonicalPath();
             Properties props = new Properties();
             FileInputStream f = new FileInputStream(new File(filepath));
             props.load(f);
-            String value = props.getProperty("mongo_uri");
-            f.close();        
+            String value = props.getProperty(key);
+            f.close();
             return value;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
+    }
+    public static String getMongoUri(){
+        return readConfig("mongo_uri");  
     }
     
 
     public static String getSpotifyClientId() {
-        try {
-            String filepath = new File(
-                    (new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\WEB-INF\\")
-                            .getCanonicalPath()),
-                    "config.properties").getCanonicalPath();
-            Properties props = new Properties();
-            FileInputStream f = new FileInputStream(new File(filepath));
-            props.load(f);
-            String value = props.getProperty("spotify_client_id");
-            f.close();        
-            return value;
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+        return readConfig("spotify_client_id");  
     }
 
     public static String getSpotifyClientSecret(){
-        try {
-            String filepath = new File(
-                    (new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\WEB-INF\\")
-                            .getCanonicalPath()),
-                    "config.properties").getCanonicalPath();
-            Properties props = new Properties();
-            FileInputStream f = new FileInputStream(new File(filepath));
-            props.load(f);
-            String value = props.getProperty("spotify_client_secret");
-            f.close();        
-            return value;
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }  
-        return null;      
+        return readConfig("spotify_client_secret");     
+    }
+
+    public static String getGeniusClientId(){
+        return readConfig("genius_client_id");
     }
     
+    public static String getGeniusAccessToken(){
+        return readConfig("genius_access_token");
+    }
+
 }

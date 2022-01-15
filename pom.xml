@@ -14,6 +14,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- LIBRERIA SPOTIFY API -->
         <dependency>
@@ -21,6 +28,13 @@
             <artifactId>spotify-web-api-java</artifactId>
             <version>6.5.4</version>
         </dependency>
+
+        <!-- LIBRERIA GENIUS API-->
+		<dependency>
+			<groupId>com.github.LowLevelSubmarine</groupId>
+			<artifactId>GeniusLyricsAPI</artifactId>
+			<version>master</version>
+		</dependency>
 
         <!-- JSON AND XML UTILITY-->
 		<dependency>  
