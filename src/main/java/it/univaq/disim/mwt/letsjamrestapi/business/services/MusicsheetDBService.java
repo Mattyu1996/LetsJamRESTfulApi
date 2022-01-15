@@ -213,4 +213,9 @@ public class MusicsheetDBService {
             e.printStackTrace();
         }
     }
+
+    public static int addMusicSheet(MusicSheet m){
+
+        return 0;
+    }
 }

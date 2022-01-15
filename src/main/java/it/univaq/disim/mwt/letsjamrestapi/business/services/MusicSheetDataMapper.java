@@ -13,7 +13,6 @@ import com.mongodb.DBObject;
 
 import org.bson.Document;
 
-import de.undercouch.bson4jackson.BsonFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 
 public class MusicSheetDataMapper {

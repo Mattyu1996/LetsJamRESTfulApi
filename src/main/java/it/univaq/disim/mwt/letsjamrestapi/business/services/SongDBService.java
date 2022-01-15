@@ -75,5 +75,19 @@ public class SongDBService {
         }
         return null;
     }
+
+    public static void addSong(Song s){
+        Connection c = SqlDb.getConnection();
+        String query = "INSERT INTO brani (title, author) VALUES (?,?)";
+        try {
+            PreparedStatement st = c.prepareStatement(query);
+            st.setString(1, s.getTitle());
+            st.setString(2, s.getAuthor());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     
 }
