@@ -7,12 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -24,6 +20,7 @@ import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
+import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 
 public class MusicsheetDBService {
     
@@ -238,9 +235,8 @@ public class MusicsheetDBService {
     public static void insertMusicSheetInstruments(MusicSheet m){
         Connection c = SqlDb.getConnection();
         String instrumentsQuery = "INSERT INTO spartiti_strumenti (music_sheet_id, instrument_id) VALUES (?,?)";
-        PreparedStatement instruments;
         try {
-            instruments = c.prepareStatement(instrumentsQuery);
+            PreparedStatement instruments = c.prepareStatement(instrumentsQuery);
             List<Instrument> strumenti = m.getInstruments();
             for(int i=0; i < strumenti.size(); i++){
                 Instrument listInstrument = strumenti.get(i);
@@ -265,5 +261,57 @@ public class MusicsheetDBService {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
+    }
+
+
+    public static void deleteMusicSheet(BigDecimal musicsheetId){
+        Connection c = SqlDb.getConnection();
+        try {
+            PreparedStatement st = c.prepareStatement("DELETE FROM spartiti WHERE id = ?");
+            st.setLong(1, musicsheetId.longValue());
+            st.executeUpdate();
+            st = c.prepareStatement("DELETE FROM spartiti_strumenti WHERE music_sheet_id = ?");
+            st.setLong(1, musicsheetId.longValue());
+            st.executeUpdate();
+            st = c.prepareStatement("DELETE FROM spartiti_likes WHERE music_sheet_id = ?");
+            st.setLong(1, musicsheetId.longValue());
+            st.executeUpdate();
+            c.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        MongoClient client = MongoDb.getConnection();
+        MongoCollection<Document> collection = client.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
+        BasicDBObject query = new BasicDBObject();
+        query.append("_id", musicsheetId.toString());
+        collection.deleteOne(query);
+    }
+
+    public static void updateMusicSheet(UpdateMusicsheetBody body, BigDecimal musicsheetId){
+        Connection c = SqlDb.getConnection();
+        try {
+            PreparedStatement st = c.prepareStatement("UPDATE spartiti SET title=?, author=?, visibility=? WHERE id = ?");
+            st.setString(1, body.getTitle());
+            st.setString(2, body.getAuthor());
+            st.setBoolean(3, body.isVisibility());
+            st.setLong(4, musicsheetId.longValue());
+            st.executeUpdate();
+            c.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        MongoClient client = MongoDb.getConnection();
+        MongoCollection<Document> collection = client.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
+        BasicDBObject updateField = new BasicDBObject();
+        updateField.append("content", body.getContent());
+        BasicDBObject update = new BasicDBObject();
+        update.append("$set", updateField);
+        BasicDBObject query = new BasicDBObject();
+        query.append("_id", musicsheetId.toString());
+        collection.findOneAndUpdate(query, update);
     }
 }

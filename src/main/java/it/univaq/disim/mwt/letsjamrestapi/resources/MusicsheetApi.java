@@ -1,34 +1,40 @@
 package it.univaq.disim.mwt.letsjamrestapi.resources;
 
+import java.math.BigDecimal;
+
+import javax.annotation.Generated;
+import javax.servlet.ServletConfig;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.Set;
-
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.MusicsheetApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetIdCommentBody;
-import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetMusicsheetIdBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
-import javax.annotation.Generated;
-import javax.servlet.ServletConfig;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.*;
 
 @Path("/musicsheet")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
@@ -223,7 +229,7 @@ public class MusicsheetApi {
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     public Response updateMusicSheet(
-            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) MusicsheetMusicsheetIdBody body,
+            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) UpdateMusicsheetBody body,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
             @Context SecurityContext securityContext)
             throws NotFoundException {

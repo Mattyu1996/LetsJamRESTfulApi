@@ -3,7 +3,7 @@ package it.univaq.disim.mwt.letsjamrestapi.services;
 import java.math.BigDecimal;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetIdCommentBody;
-import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetMusicsheetIdBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -36,6 +36,6 @@ public abstract class MusicsheetApiService {
     public abstract Response removeLike(@DecimalMin("1") BigDecimal musicsheetId, @DecimalMin("1") BigDecimal userId,
             SecurityContext securityContext) throws NotFoundException;
 
-    public abstract Response updateMusicSheet(MusicsheetMusicsheetIdBody body, @DecimalMin("1") BigDecimal musicsheetId,
+    public abstract Response updateMusicSheet(UpdateMusicsheetBody body, @DecimalMin("1") BigDecimal musicsheetId,
             SecurityContext securityContext) throws NotFoundException;
 }

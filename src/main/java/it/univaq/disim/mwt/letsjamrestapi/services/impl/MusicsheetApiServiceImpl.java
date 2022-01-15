@@ -1,12 +1,14 @@
 package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import it.univaq.disim.mwt.letsjamrestapi.business.MongoDb;
+import javax.annotation.Generated;
+import javax.validation.constraints.DecimalMin;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+
 import it.univaq.disim.mwt.letsjamrestapi.business.services.GenreDBService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.LyricsService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.MusicsheetDBService;
@@ -20,22 +22,10 @@ import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetIdCommentBody;
-import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetMusicsheetIdBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
-
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-
-import com.mongodb.BasicDBObject;
-
-import org.bson.conversions.Bson;
-
-import javax.annotation.Generated;
-import javax.servlet.ServletContext;
-import javax.validation.constraints.*;
 
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public class MusicsheetApiServiceImpl extends MusicsheetApiService {
@@ -106,8 +96,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     @Override
     public Response deleteMusicSheetById(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
             throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        MusicsheetDBService.deleteMusicSheet(musicsheetId);
+        return Response.ok().build();
     }
 
     @Override
@@ -139,9 +129,9 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     }
 
     @Override
-    public Response updateMusicSheet(MusicsheetMusicsheetIdBody body, @DecimalMin("1") BigDecimal musicsheetId,
+    public Response updateMusicSheet(UpdateMusicsheetBody body, @DecimalMin("1") BigDecimal musicsheetId,
             SecurityContext securityContext) throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        MusicsheetDBService.updateMusicSheet(body, musicsheetId);
+        return Response.ok().build();
     }
 }

@@ -1,5 +1,12 @@
 package it.univaq.disim.mwt.letsjamrestapi;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
 import it.univaq.disim.mwt.letsjamrestapi.resources.AuthApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.CommentApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.GenresApi;
@@ -13,14 +20,6 @@ import it.univaq.disim.mwt.letsjamrestapi.resources.SongsApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.UserApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.UsersApi;
 import it.univaq.disim.mwt.letsjamrestapi.security.CORSFilter;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
-import org.bson.codecs.BsonTypeClassMap;
 
 /**
  *

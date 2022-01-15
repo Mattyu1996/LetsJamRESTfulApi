@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * MusicsheetMusicsheetIdBody
  */
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
-public class MusicsheetMusicsheetIdBody   {
+public class UpdateMusicsheetBody   {
   @JsonProperty("title")
   private String title = null;
 
@@ -34,7 +34,7 @@ public class MusicsheetMusicsheetIdBody   {
   @JsonProperty("content")
   private String content = null;
 
-  public MusicsheetMusicsheetIdBody title(String title) {
+  public UpdateMusicsheetBody title(String title) {
     this.title = title;
     return this;
   }
@@ -53,7 +53,7 @@ public class MusicsheetMusicsheetIdBody   {
     this.title = title;
   }
 
-  public MusicsheetMusicsheetIdBody author(String author) {
+  public UpdateMusicsheetBody author(String author) {
     this.author = author;
     return this;
   }
@@ -72,7 +72,7 @@ public class MusicsheetMusicsheetIdBody   {
     this.author = author;
   }
 
-  public MusicsheetMusicsheetIdBody visibility(Boolean visibility) {
+  public UpdateMusicsheetBody visibility(Boolean visibility) {
     this.visibility = visibility;
     return this;
   }
@@ -91,7 +91,7 @@ public class MusicsheetMusicsheetIdBody   {
     this.visibility = visibility;
   }
 
-  public MusicsheetMusicsheetIdBody content(String content) {
+  public UpdateMusicsheetBody content(String content) {
     this.content = content;
     return this;
   }
@@ -119,7 +119,7 @@ public class MusicsheetMusicsheetIdBody   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    MusicsheetMusicsheetIdBody musicsheetMusicsheetIdBody = (MusicsheetMusicsheetIdBody) o;
+    UpdateMusicsheetBody musicsheetMusicsheetIdBody = (UpdateMusicsheetBody) o;
     return Objects.equals(this.title, musicsheetMusicsheetIdBody.title) &&
         Objects.equals(this.author, musicsheetMusicsheetIdBody.author) &&
         Objects.equals(this.visibility, musicsheetMusicsheetIdBody.visibility) &&
