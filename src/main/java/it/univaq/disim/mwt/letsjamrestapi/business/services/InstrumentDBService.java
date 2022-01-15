@@ -67,4 +67,42 @@ public class InstrumentDBService {
         }
         return null;
     }
+
+    public static BigDecimal addInstrument(String name){
+        Connection c = SqlDb.getConnection();
+        String query = "INSERT INTO strumenti (name) VALUES (?)";
+        try {
+            PreparedStatement st = c.prepareStatement(query);
+            st.setString(1, name);
+            st.executeUpdate();
+            ResultSet rs = st.getGeneratedKeys();
+            BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
+            rs.close();
+            return id;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Instrument getInstrumentByName(String name){
+        Connection c = SqlDb.getConnection();
+        try {
+            String query = "SELECT * FROM strumenti WHERE name = ?";
+            PreparedStatement st = c.prepareStatement(query);
+            st.setString(1, name);
+            ResultSet rs = st.executeQuery();
+            try {
+                if (rs.next()) {
+                    return makeInstrument(rs);
+                }
+            } finally {
+                rs.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

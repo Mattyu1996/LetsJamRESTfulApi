@@ -35,7 +35,7 @@ public class ScoreAnalyzerService {
     };
 
     public Map<String,String> getInstruments(String jsonString){
-        JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject(jsonString);
         JSONArray parts = new JSONArray();
         JSONArray scoreInstruments = new JSONArray();
         HashMap<String,String> instrumentPartMappings = new HashMap<String,String>();

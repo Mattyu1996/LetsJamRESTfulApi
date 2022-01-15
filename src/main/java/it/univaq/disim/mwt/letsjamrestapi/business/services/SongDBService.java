@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 
 public class SongDBService {
@@ -36,16 +37,22 @@ public class SongDBService {
     public static Song getSongById(BigDecimal songId){
         Connection c = SqlDb.getConnection();
         try {
-            List<Song> brani = new ArrayList<Song>();
             String query = "SELECT * FROM brani WHERE id = ?";
             PreparedStatement st = c.prepareStatement(query);
             st.setLong(1, songId.longValue());
             ResultSet rs = st.executeQuery();
             try {
-                while (rs.next()) {
-                    brani.add(makeSong(rs));
+                if (rs.next()) {
+                    return makeSong(rs);
                 }
-                return brani.get(0);
+                else {
+                    try {
+                        throw new NotFoundException(404, "Song not found");
+                    } catch (NotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
             } finally {
                 rs.close();
             }
@@ -76,7 +83,7 @@ public class SongDBService {
         return null;
     }
 
-    public static void addSong(Song s){
+    public static BigDecimal addSong(Song s){
         Connection c = SqlDb.getConnection();
         String query = "INSERT INTO brani (title, author) VALUES (?,?)";
         try {
@@ -84,10 +91,15 @@ public class SongDBService {
             st.setString(1, s.getTitle());
             st.setString(2, s.getAuthor());
             st.executeUpdate();
+            ResultSet rs = st.getGeneratedKeys();
+            BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
+            rs.close();
+            return id;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return null;
     }
     
 }

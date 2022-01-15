@@ -65,7 +65,7 @@ public class RESTApp extends Application {
         //c.add(AppExceptionMapper.class);
 
         
-        
+        System.out.println("READY");
         classes = Collections.unmodifiableSet(c);
     }
 

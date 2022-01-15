@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.bson.Document;
 
 import it.univaq.disim.mwt.letsjamrestapi.business.MongoDb;
 import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
+import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 
@@ -202,20 +204,66 @@ public class MusicsheetDBService {
     public static void addMusicSheetData(MusicSheetData data, BigDecimal musicsheetId){
         MongoClient conn = MongoDb.getConnection();
         MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
+        collection.insertOne(MusicSheetDataMapper.serialize(data, musicsheetId));
+    }
+
+    public static BigDecimal addMusicSheet(MusicSheet m){
+        Connection c = SqlDb.getConnection();
         try {
-            Document d = new Document();
-            // d.append("_id", musicsheetId.longValue());
-            // d.append("content", data.getContent());
-            // d.append("instrumentMapping", new ObjectMapper().write(data.getInstrumentMapping()));
-            collection.insertOne(MusicSheetDataMapper.serialize(data, musicsheetId));
-        } catch (Exception e) {
+            String insertMusicSheetQuery = "INSERT INTO spartiti (create_date_time, title, author, user_id, song_id, rearranged, has_tablature, visibility, verified) ";
+            insertMusicSheetQuery+="VALUES(CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)";
+            PreparedStatement insertMusicSheet = c.prepareStatement(insertMusicSheetQuery, Statement.RETURN_GENERATED_KEYS);
+            insertMusicSheet.setString(1, m.getTitle());
+            insertMusicSheet.setString(2, m.getAuthor());
+            insertMusicSheet.setLong(3, m.getUser().getId().longValue());
+            insertMusicSheet.setLong(4, m.getSong().getId().longValue());
+            insertMusicSheet.setBoolean(5, m.isRearranged());
+            insertMusicSheet.setBoolean(6, m.isHasTablature());
+            insertMusicSheet.setBoolean(7, m.isVisibility());
+            insertMusicSheet.setBoolean(8, m.isVerified());
+            insertMusicSheet.executeUpdate();
+            ResultSet rs = insertMusicSheet.getGeneratedKeys();
+            BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
+            m.setId(id);
+            insertMusicSheetInstruments(m);
+            rs.close();
+            return id;
+        } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return null;
     }
 
-    public static int addMusicSheet(MusicSheet m){
-
-        return 0;
+    public static void insertMusicSheetInstruments(MusicSheet m){
+        Connection c = SqlDb.getConnection();
+        String instrumentsQuery = "INSERT INTO spartiti_strumenti (music_sheet_id, instrument_id) VALUES (?,?)";
+        PreparedStatement instruments;
+        try {
+            instruments = c.prepareStatement(instrumentsQuery);
+            List<Instrument> strumenti = m.getInstruments();
+            for(int i=0; i < strumenti.size(); i++){
+                Instrument listInstrument = strumenti.get(i);
+                Instrument dbInstrument = InstrumentDBService.getInstrumentByName(listInstrument.getName());
+                if(dbInstrument == null) {
+                    listInstrument.setId(InstrumentDBService.addInstrument(listInstrument.getName())); 
+                }
+                else{
+                    listInstrument = dbInstrument;
+                }
+                try {
+                    instruments.setLong(1, m.getId().longValue());
+                    instruments.setLong(2, listInstrument.getId().longValue());
+                    instruments.executeUpdate();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            c.close();
+        } catch (SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
     }
 }

@@ -15,6 +15,12 @@
     </properties>
 
     <dependencies>
+        <!-- LIBRERIA SPOTIFY API -->
+        <dependency>
+            <groupId>se.michaelthelin.spotify</groupId>
+            <artifactId>spotify-web-api-java</artifactId>
+            <version>6.5.4</version>
+        </dependency>
 
         <!-- JSON AND XML UTILITY-->
 		<dependency>  
