@@ -398,7 +398,7 @@ public class MusicSheet   {
     return o.toString().replace("\n", "\n    ");
   }
 
-  public enum SortEnum {
+  public enum MusicSheetSortEnum {
     TITLE("spartiti.title"),
     SONGTITLE("brani.title"),
     CREATEDATETIME("spartiti.create_date_time"),
@@ -406,7 +406,7 @@ public class MusicSheet   {
 
     private String value;
 
-    SortEnum(String value) {
+    MusicSheetSortEnum(String value) {
       this.value = value;
     }
 
@@ -414,8 +414,8 @@ public class MusicSheet   {
       return String.valueOf(value);
     }
 
-    public static SortEnum fromValue(String text) {
-      for (SortEnum b : SortEnum.values()) {
+    public static MusicSheetSortEnum fromValue(String text) {
+      for (MusicSheetSortEnum b : MusicSheetSortEnum.values()) {
         if (String.valueOf(b.value).equals(text)) {
           return b;
         }

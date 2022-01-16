@@ -34,7 +34,7 @@ public class SongDBService {
         return s;
     }
 
-    public static Song getSongById(BigDecimal songId){
+    public static Song getSongById(BigDecimal songId) {
         Connection c = SqlDb.getConnection();
         try {
             String query = "SELECT * FROM brani WHERE id = ?";
@@ -44,8 +44,7 @@ public class SongDBService {
             try {
                 if (rs.next()) {
                     return makeSong(rs);
-                }
-                else {
+                } else {
                     try {
                         throw new NotFoundException(404, "Song not found");
                     } catch (NotFoundException e) {
@@ -62,28 +61,7 @@ public class SongDBService {
         return null;
     }
 
-    public static Song getAllSongs(){
-        Connection c = SqlDb.getConnection();
-        try {
-            List<Song> brani = new ArrayList<Song>();
-            String query = "SELECT * FROM brani";
-            PreparedStatement st = c.prepareStatement(query);
-            ResultSet rs = st.executeQuery();
-            try {
-                while (rs.next()) {
-                    brani.add(makeSong(rs));
-                }
-                return brani.get(0);
-            } finally {
-                rs.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static BigDecimal addSong(Song s){
+    public static BigDecimal addSong(Song s) {
         Connection c = SqlDb.getConnection();
         String query = "INSERT INTO brani (title, author) VALUES (?,?)";
         try {
@@ -101,5 +79,102 @@ public class SongDBService {
         }
         return null;
     }
-    
+
+    public static List<Song> searchSongs(
+            String search, String sortBy,
+            String sortDirection, List<String> genres,
+            Boolean isExplicit, Boolean hasLyrics,
+            String albumtype, BigDecimal pageNumber,
+            BigDecimal pageSize) {
+
+        Connection c = SqlDb.getConnection();
+        String q = "SELECT * FROM brani JOIN generi ON genre_id = generi.id ";
+        boolean whereClause = false;
+        // SEARCH STRING
+        if (search != null && search.length() > 0) {
+            q += "WHERE (brani.title LIKE CONCAT('%',?,'%') OR brani.author LIKE CONCAT('%',?,'%') OR brani.album_name LIKE CONCAT('%',?,'%')) ";
+            whereClause = true;
+        }
+        // GENERES
+        if (!genres.isEmpty() && !whereClause) {
+            q += "WHERE generi.name in (";
+            for (int i = 0; i < genres.size(); i++) {
+                q += (i == genres.size() - 1) ? "?" : "?,";
+            }
+            q += ") ";
+            whereClause = true;
+        } else if (!genres.isEmpty() && whereClause) {
+            q += "AND generi.name in (";
+            for (int i = 0; i < genres.size(); i++) {
+                q += (i == genres.size() - 1) ? "?" : "?,";
+            }
+            q += ") ";
+        }
+        // ALBUM TYPE
+        if (albumtype != null && !whereClause) {
+            q += "WHERE brani.album_type = ? ";
+            whereClause = true;
+        } else if (albumtype != null && whereClause) {
+            q += "AND brani.album_type = ? ";
+        }
+        // EXPLICIT
+        if (isExplicit != null && !whereClause) {
+            q += "WHERE brani.is_explicit = ? ";
+            whereClause = true;
+        } else if (isExplicit != null && whereClause) {
+            q += "AND brani.is_explicit = ? ";
+        }
+        // LYRICS
+        if (hasLyrics != null && !whereClause) {
+            q += (hasLyrics) ? "WHERE brani.lyrics IS NOT NULL " : "WHERE brani.lyrics IS NULL ";
+            whereClause = true;
+        } else if (hasLyrics != null && whereClause) {
+            q += (hasLyrics) ? "AND brani.lyrics IS NOT NULL " : "AND brani.lyrics IS NULL ";
+        }
+        // ORDER BY
+        if (sortBy != null) {
+            q += "ORDER BY " + sortBy;
+        }
+        // SORT DIRECTION
+        if (sortDirection != null) {
+            q += " " + sortDirection + " ";
+        }
+        // PAGESIZE PAGENUMBER
+        if (pageSize != null && pageNumber != null) {
+            q += "LIMIT ? OFFSET ? ";
+        }
+        try {
+            List<Song> brani = new ArrayList<Song>();
+            PreparedStatement stmt = c.prepareStatement(q);
+            int indexCounter = 0;
+            if (search != null && search.length() > 0) {
+                for (int i = 0; i < 3; i++)
+                    stmt.setString(++indexCounter, search);
+            }
+            if (!genres.isEmpty()) {
+                for (int i = 0; i < genres.size(); i++)
+                    stmt.setString(++indexCounter, genres.get(i));
+            }
+            if (albumtype != null) {
+                stmt.setString(++indexCounter, albumtype);
+            }
+            if (isExplicit != null) {
+                stmt.setBoolean(++indexCounter, isExplicit);
+            }
+            if (pageSize != null && pageNumber != null) {
+                stmt.setLong(++indexCounter, pageSize.longValue());
+                stmt.setLong(++indexCounter, pageSize.longValue() * pageNumber.longValue());
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                brani.add(makeSong(rs));
+            }
+            rs.close();
+            return brani;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

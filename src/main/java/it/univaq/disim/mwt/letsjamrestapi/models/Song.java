@@ -335,4 +335,55 @@ public class Song   {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
+  public enum SongSortEnum {
+    TITLE("brani.title"),
+    ALBUMNAME("brani.album_name"),
+    CREATEDATETIME("brani.create_date_time"),
+    DURATION("brani.duration");
+
+    private String value;
+
+    SongSortEnum(String value) {
+      this.value = value;
+    }
+
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static SongSortEnum fromValue(String text) {
+      for (SongSortEnum b : SongSortEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+  public enum SongAlbumType{
+    ALBUM("ALBUM"),
+    SINGLE("SINGLE"),
+    COMPILATION("COMPILATION");
+
+    private String value;
+
+    SongAlbumType(String value) {
+      this.value = value;
+    }
+
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static SongSortEnum fromValue(String text) {
+      for (SongSortEnum b : SongSortEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
 }

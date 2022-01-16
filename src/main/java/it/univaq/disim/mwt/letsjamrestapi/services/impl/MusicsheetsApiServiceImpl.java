@@ -6,7 +6,7 @@ import java.util.List;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.MusicsheetDBService;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
-import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet.SortEnum;
+import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet.MusicSheetSortEnum;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetsApiService;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -26,16 +26,16 @@ public class MusicsheetsApiServiceImpl extends MusicsheetsApiService {
         if(sortby != null){
             switch (sortby) {
                 case "TITLE":
-                    sortBy = SortEnum.TITLE.toString();
+                    sortBy = MusicSheetSortEnum.TITLE.toString();
                     break;
                 case "SONGTITLE":
-                    sortBy = SortEnum.SONGTITLE.toString();
+                    sortBy = MusicSheetSortEnum.SONGTITLE.toString();
                     break;
                 case "CREATEDATETIME":
-                    sortBy = SortEnum.CREATEDATETIME.toString();
+                    sortBy = MusicSheetSortEnum.CREATEDATETIME.toString();
                     break;
                 case "LIKES":
-                    sortBy = SortEnum.LIKES.toString();
+                    sortBy = MusicSheetSortEnum.LIKES.toString();
                     break;        
                 default:
                     break;

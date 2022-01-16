@@ -118,24 +118,24 @@ public class MusicsheetDBService {
 		}
 
 		//VERIFIED
-		if(verified != null && verified && !whereClause){
+		if(verified != null && !whereClause){
 			q += "WHERE verified = ? ";
 			whereClause = true;
-		}else if(verified != null && verified && whereClause){
+		}else if(verified != null && whereClause){
 			q += "AND verified = ? ";
 		}
 		//REARRANGED
-		if(rearranged != null && rearranged && !whereClause){
+		if(rearranged != null && !whereClause){
 			q += "WHERE rearranged = ? ";
 			whereClause = true;
-		}else if(rearranged != null && rearranged && whereClause){
+		}else if(rearranged != null && whereClause){
 			q += "AND rearranged = ? ";
 		}
         //HAS TABLATURE
-		if(tablature != null && tablature && !whereClause){
+		if(tablature != null  && !whereClause){
 			q += "WHERE has_tablature = ? ";
 			whereClause = true;
-		}else if(tablature != null && tablature && whereClause){
+		}else if(tablature != null && whereClause){
 			q += "AND has_tablature = ? ";
 		}
 		//ORDER BY
