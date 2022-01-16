@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.UsersApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.UsersApiService;
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
@@ -50,6 +51,7 @@ public class UsersApi {
    }
 
    @GET
+   @AuthLevel1
    @Produces({ "application/json", "text/plain" })
    @Operation(summary = "Gets all users", description = "", security = {
          @SecurityRequirement(name = "bearerAuth") }, tags = { "user" })

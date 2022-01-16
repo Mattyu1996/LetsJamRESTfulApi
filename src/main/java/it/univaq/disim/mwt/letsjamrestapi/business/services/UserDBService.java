@@ -322,7 +322,7 @@ public class UserDBService {
     public static User getUserFromToken(String token){
         Connection c = SqlDb.getConnection();
         try {
-            PreparedStatement st = c.prepareStatement("SELECT * FROM utenti JOIN tokens where token = ?");
+            PreparedStatement st = c.prepareStatement("SELECT * FROM utenti JOIN tokens ON utenti.id = user_id WHERE token = ?");
             st.setString(1, token);
             ResultSet rs = st.executeQuery();
             try {

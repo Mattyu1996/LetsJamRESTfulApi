@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.univaq.disim.mwt.letsjamrestapi.factories.SongsApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.SongsApiService;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import java.math.BigDecimal;
@@ -50,6 +51,7 @@ public class SongsApi {
    }
 
    @GET
+   @AuthLevel1
    @Produces({ "application/json", "text/plain" })
    @Operation(summary = "Gets all songs", description = "", security = {
          @SecurityRequirement(name = "bearerAuth") }, tags = { "song" })

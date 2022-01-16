@@ -13,6 +13,7 @@ import it.univaq.disim.mwt.letsjamrestapi.factories.UserApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.models.UpdateUserBody;
 import it.univaq.disim.mwt.letsjamrestapi.services.UserApiService;
 
@@ -53,6 +54,7 @@ public class UserApi {
     }
 
     @POST
+    @AuthLevel1
     @Path("/{userId}/genres/{genreId}")
     @Produces({ "text/plain" })
     @Operation(summary = "Adds specified genre from specified user's preferred genres", description = "", security = {
@@ -72,6 +74,7 @@ public class UserApi {
     }
 
     @POST
+    @AuthLevel1
     @Path("/{userId}/instruments/{instrumentId}")
     @Produces({ "text/plain" })
     @Operation(summary = "Adds specified instrument from specified user's preferred instruments", description = "", tags = {
@@ -92,6 +95,7 @@ public class UserApi {
     }
 
     @DELETE
+    @AuthLevel1
     @Path("/{userId}")
     @Produces({ "text/plain" })
     @Operation(summary = "Deletes user by id", description = "", security = {
@@ -111,6 +115,7 @@ public class UserApi {
     }
     
     @GET
+    @AuthLevel1
     @Path("/{userId}")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets user by id", description = "", security = {
@@ -130,6 +135,7 @@ public class UserApi {
     }
 
     @GET
+    @AuthLevel1
     @Path("/{userId}/genres")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets user's preferred genres", description = "", security = {
@@ -149,6 +155,7 @@ public class UserApi {
     }
 
     @GET
+    @AuthLevel1
     @Path("/{userId}/instruments")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets user's preferred instruments", description = "", security = {
@@ -168,6 +175,7 @@ public class UserApi {
     }
 
     @DELETE
+    @AuthLevel1
     @Path("/{userId}/genres/{genreId}")
     @Produces({ "text/plain" })
     @Operation(summary = "Removes specified genre from specified user's preferred genres", description = "", security = {
@@ -188,6 +196,7 @@ public class UserApi {
     }
 
     @DELETE
+    @AuthLevel1
     @Path("/{userId}/instruments/{instrumentId}")
     @Produces({ "text/plain" })
     @Operation(summary = "Removes specified instrument from specified user's preferred instruments", description = "", security = {
@@ -207,6 +216,7 @@ public class UserApi {
     }
 
     @PUT
+    @AuthLevel1
     @Path("/{userId}/avatar")
     @Consumes({ "image/jpeg" })
     @Produces({ "application/json", "text/plain" })
@@ -229,6 +239,7 @@ public class UserApi {
     }
 
     @PUT
+    @AuthLevel1
     @Path("/{userId}")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "text/plain" })

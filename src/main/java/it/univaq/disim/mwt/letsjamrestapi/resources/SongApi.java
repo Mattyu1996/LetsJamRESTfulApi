@@ -1,24 +1,30 @@
 package it.univaq.disim.mwt.letsjamrestapi.resources;
 
+import java.math.BigDecimal;
+
+import javax.annotation.Generated;
+import javax.servlet.ServletConfig;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.SongApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.SongApiService;
-import java.math.BigDecimal;
-import javax.annotation.Generated;
-import javax.servlet.ServletConfig;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.*;
 
 
 @Path("/song")
@@ -48,6 +54,7 @@ public class SongApi {
    }
 
    @GET
+   @AuthLevel1
    @Path("/{songId}")
    @Produces({ "application/json", "text/plain" })
    @Operation(summary = "Gets a song by id", description = "", security = {

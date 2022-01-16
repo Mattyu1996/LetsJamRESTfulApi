@@ -13,6 +13,7 @@ import it.univaq.disim.mwt.letsjamrestapi.factories.ScoreApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.InlineResponse200;
 import it.univaq.disim.mwt.letsjamrestapi.models.InlineResponse2001;
 import it.univaq.disim.mwt.letsjamrestapi.models.ScoreResponseBody;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.models.ScorePartsBody;
 import it.univaq.disim.mwt.letsjamrestapi.services.ScoreApiService;
 import java.util.List;
@@ -50,6 +51,7 @@ public class ScoreApi {
     }
 
     @POST
+    @AuthLevel1
     @Path("/analyze")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "text/plain" })
@@ -68,6 +70,7 @@ public class ScoreApi {
     }
 
     @POST
+    @AuthLevel1
     @Path("/parts")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "text/plain" })
@@ -86,6 +89,7 @@ public class ScoreApi {
     }
 
     @GET
+    @AuthLevel1
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Makes an empty score from the specified instrument list", description = "", security = {
             @SecurityRequirement(name = "bearerAuth") }, tags = { "score" })

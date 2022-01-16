@@ -27,6 +27,7 @@ import it.univaq.disim.mwt.letsjamrestapi.factories.AuthApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.AuthLoginBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewUser;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.AuthApiService;
 
 @Path("/auth")
@@ -95,7 +96,7 @@ public class AuthApi {
 
     @DELETE
     @Path("/logout")
-
+    @AuthLevel1
     @Produces({ "text/plain" })
     @Operation(summary = "Logs out the user", description = "", security = {
             @SecurityRequirement(name = "bearerAuth") }, tags = { "auth" })
@@ -111,6 +112,7 @@ public class AuthApi {
 
     @GET
     @Path("/refresh")
+    @AuthLevel1
     @Produces({ "text/plain" })
     @Operation(summary = "Refreshes the jwt token without relog in again", description = "", security = {
             @SecurityRequirement(name = "bearerAuth") }, tags = { "auth" })

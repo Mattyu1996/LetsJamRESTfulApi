@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.GenresApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.GenresApiService;
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
@@ -45,6 +46,7 @@ public class GenresApi {
    }
 
    @GET
+   @AuthLevel1
    @Produces({ "application/json", "text/plain" })
    @Operation(summary = "Gets all the song gernes", description = "", security = {
          @SecurityRequirement(name = "bearerAuth") }, tags = { "genre" })

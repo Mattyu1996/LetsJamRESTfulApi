@@ -14,6 +14,7 @@ import java.util.List;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.MusicsheetsApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetsApiService;
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
@@ -49,6 +50,7 @@ public class MusicsheetsApi {
    }
 
    @GET
+   @AuthLevel1
    @Produces({ "application/json", "text/plain" })
    @Operation(summary = "Gets all musicsheets", description = "", security = {
          @SecurityRequirement(name = "bearerAuth") }, tags = { "musicsheet" })

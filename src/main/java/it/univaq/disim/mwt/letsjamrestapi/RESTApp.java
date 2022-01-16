@@ -19,6 +19,7 @@ import it.univaq.disim.mwt.letsjamrestapi.resources.SongApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.SongsApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.UserApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.UsersApi;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1Filter;
 import it.univaq.disim.mwt.letsjamrestapi.security.CORSFilter;
 
 /**
@@ -55,7 +56,7 @@ public class RESTApp extends Application {
         //c.add(ObjectMapperContextResolver.class);
 
         //esempio di autenticazione
-        //c.add(AuthLevel1Filter.class);
+        c.add(AuthLevel1Filter.class);
         
         //aggiungiamo il filtro che gestisce gli header CORS
         c.add(CORSFilter.class);

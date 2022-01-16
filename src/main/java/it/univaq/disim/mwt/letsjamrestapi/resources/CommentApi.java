@@ -14,6 +14,7 @@ import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.CommentApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
 import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.CommentApiService;
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
@@ -49,6 +50,7 @@ public class CommentApi {
     }
 
     @GET
+    @AuthLevel1
     @Path("/{commentId}")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets a comment by id", description = "", security = {
@@ -68,6 +70,7 @@ public class CommentApi {
     }
 
     @GET
+    @AuthLevel1
     @Path("/{commentId}/replies")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets all the replies to the specified comment", description = "", security = {
@@ -87,6 +90,7 @@ public class CommentApi {
     }
 
     @PATCH
+    @AuthLevel1
     @Path("/{commentId}")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "text/plain" })

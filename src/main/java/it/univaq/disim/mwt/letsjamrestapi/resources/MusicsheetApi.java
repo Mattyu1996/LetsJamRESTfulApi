@@ -29,11 +29,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.MusicsheetApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
+import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
-import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
-import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
+import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
+import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
 
 @Path("/musicsheet")
@@ -61,6 +62,7 @@ public class MusicsheetApi {
     }
 
     @POST
+    @AuthLevel1
     @Path("/{musicsheetId}/comment")
     @Consumes({ "application/json" })
     @Produces({ "application/json", "text/plain" })
@@ -83,6 +85,7 @@ public class MusicsheetApi {
     }
 
     @POST
+    @AuthLevel1
     @Path("/{musicsheetId}/like/{userId}")
     @Produces({ "text/plain" })
     @Operation(summary = "Add like from specified user to specified musicsheet", description = "", security = {
@@ -103,6 +106,7 @@ public class MusicsheetApi {
     }
 
     @POST
+    @AuthLevel1
     @Consumes({ "application/json" })
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Adds a new musicSheet", description = "", security = {
@@ -122,6 +126,7 @@ public class MusicsheetApi {
     }
 
     @DELETE
+    @AuthLevel1
     @Path("/{musicsheetId}")
     @Produces({ "text/plain" })
     @Operation(summary = "Deletes musicsheet by id", description = "", security = {
@@ -140,6 +145,7 @@ public class MusicsheetApi {
     }
 
     @GET
+    @AuthLevel1
     @Path("/{musicsheetId}")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets musicsheet by id", description = "", security = {
@@ -158,6 +164,7 @@ public class MusicsheetApi {
     }
 
     @GET
+    @AuthLevel1
     @Path("/{musicsheetId}/comments")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets all the comments for the specified musicsheet", description = "", security = {
@@ -177,6 +184,7 @@ public class MusicsheetApi {
     }
 
     @GET
+    @AuthLevel1
     @Path("/{musicsheetId}/data")
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Gets the specified musicsheet data", description = "", security = {
@@ -196,6 +204,7 @@ public class MusicsheetApi {
     }
 
     @DELETE
+    @AuthLevel1
     @Path("/{musicsheetId}/like/{userId}")
     @Produces({ "text/plain" })
     @Operation(summary = "Removes like from specified user to specified musicsheet", description = "", security = {
@@ -216,6 +225,7 @@ public class MusicsheetApi {
     }
 
     @PUT
+    @AuthLevel1
     @Path("/{musicsheetId}")
     @Consumes({ "application/json" })
     @Produces({ "text/plain" })
