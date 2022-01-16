@@ -17,15 +17,16 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+
 /**
- * CommentCommentIdBody
+ * MusicsheetIdCommentBody
  */
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
-public class CommentCommentIdBody   {
+public class CommentBody   {
   @JsonProperty("content")
   private String content = null;
 
-  public CommentCommentIdBody content(String content) {
+  public CommentBody content(String content) {
     this.content = content;
     return this;
   }
@@ -53,8 +54,8 @@ public class CommentCommentIdBody   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CommentCommentIdBody commentCommentIdBody = (CommentCommentIdBody) o;
-    return Objects.equals(this.content, commentCommentIdBody.content);
+    CommentBody musicsheetIdCommentBody = (CommentBody) o;
+    return Objects.equals(this.content, musicsheetIdCommentBody.content);
   }
 
   @Override
@@ -66,7 +67,7 @@ public class CommentCommentIdBody   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class CommentCommentIdBody {\n");
+    sb.append("class MusicsheetIdCommentBody {\n");
     
     sb.append("    content: ").append(toIndentedString(content)).append("\n");
     sb.append("}");

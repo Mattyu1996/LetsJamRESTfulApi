@@ -31,7 +31,7 @@ import it.univaq.disim.mwt.letsjamrestapi.factories.MusicsheetApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
-import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetIdCommentBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
@@ -75,7 +75,7 @@ public class MusicsheetApi {
     })
     public Response addComment(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
-            @Parameter(in = ParameterIn.DEFAULT, description = "") MusicsheetIdCommentBody body,
+            @Parameter(in = ParameterIn.DEFAULT, description = "") CommentBody body,
             @Parameter(in = ParameterIn.QUERY, description = "Id of the parent comment. Required if the new comment is a reply to another comment") @QueryParam("parent") BigDecimal parent,
             @Context SecurityContext securityContext)
             throws NotFoundException {

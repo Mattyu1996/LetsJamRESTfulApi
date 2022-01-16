@@ -9,6 +9,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import it.univaq.disim.mwt.letsjamrestapi.business.services.CommentDBService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.GenreDBService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.LyricsService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.MusicsheetDBService;
@@ -21,7 +22,8 @@ import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
-import it.univaq.disim.mwt.letsjamrestapi.models.MusicsheetIdCommentBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
+import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
@@ -31,10 +33,10 @@ import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
 public class MusicsheetApiServiceImpl extends MusicsheetApiService {
 
     @Override
-    public Response addComment(@DecimalMin("1") BigDecimal musicsheetId, MusicsheetIdCommentBody body,
+    public Response addComment(@DecimalMin("1") BigDecimal musicsheetId, CommentBody body,
             BigDecimal parent, SecurityContext securityContext) throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        CommentDBService.addCommentToMusicsheet(musicsheetId, parent, body, BigDecimal.valueOf(4));
+        return Response.ok().build();
     }
 
     @Override
@@ -110,8 +112,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     @Override
     public Response getMusicSheetComments(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
             throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        List<Comment> commenti = CommentDBService.getMusicsheetComments(musicsheetId);
+        return Response.ok().entity(commenti).build();
     }
 
     @Override

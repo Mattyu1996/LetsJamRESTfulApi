@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.CommentApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
-import it.univaq.disim.mwt.letsjamrestapi.models.CommentCommentIdBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.services.CommentApiService;
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
@@ -100,7 +100,7 @@ public class CommentApi {
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))) })
     public Response updateComment(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("commentId") BigDecimal commentId,
-            @Parameter(in = ParameterIn.DEFAULT, description = "") CommentCommentIdBody body,
+            @Parameter(in = ParameterIn.DEFAULT, description = "") CommentBody body,
             @Context SecurityContext securityContext)
             throws NotFoundException {
         return delegate.updateComment(commentId, body, securityContext);
