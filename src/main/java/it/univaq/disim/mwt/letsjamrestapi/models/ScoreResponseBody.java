@@ -12,35 +12,27 @@
 
 package it.univaq.disim.mwt.letsjamrestapi.models;
 
-import java.util.List;
-import java.util.Objects;
-
 import javax.annotation.Generated;
-
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
+
 /**
- * ScorePartsBody
+ * ScoreAnalyzeBody
  */
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
-public class ScorePartsBody {
+public class ScoreResponseBody   {
   @JsonProperty("score")
   private String score = null;
 
-  @JsonProperty("partlist")
-  private List<String> partlist = null;
-
-  public ScorePartsBody score(String score, List<String> partlist) {
+  public ScoreResponseBody score(String score) {
     this.score = score;
-    this.partlist = partlist;
     return this;
   }
 
   /**
    * Get score
-   * 
    * @return score
    **/
   @JsonProperty("score")
@@ -53,20 +45,6 @@ public class ScorePartsBody {
     this.score = score;
   }
 
-  /**
-   * Get partlist
-   * 
-   * @return partlist
-   **/
-  @JsonProperty("partlist")
-  @Schema(description = "")
-  public List<String> getPartlist() {
-    return partlist;
-  }
-
-  public void setPartlist(List<String> partlist) {
-    this.partlist = partlist;
-  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -76,8 +54,8 @@ public class ScorePartsBody {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ScorePartsBody scorePartsBody = (ScorePartsBody) o;
-    return Objects.equals(this.score, scorePartsBody.score);
+    ScoreResponseBody scoreAnalyzeBody = (ScoreResponseBody) o;
+    return Objects.equals(this.score, scoreAnalyzeBody.score);
   }
 
   @Override
@@ -85,11 +63,12 @@ public class ScorePartsBody {
     return Objects.hash(score);
   }
 
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ScorePartsBody {\n");
-
+    sb.append("class ScoreAnalyzeBody {\n");
+    
     sb.append("    score: ").append(toIndentedString(score)).append("\n");
     sb.append("}");
     return sb.toString();

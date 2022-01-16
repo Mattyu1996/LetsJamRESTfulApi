@@ -12,7 +12,7 @@ import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.ScoreApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.InlineResponse200;
 import it.univaq.disim.mwt.letsjamrestapi.models.InlineResponse2001;
-import it.univaq.disim.mwt.letsjamrestapi.models.ScoreAnalyzeBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.ScoreResponseBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.ScorePartsBody;
 import it.univaq.disim.mwt.letsjamrestapi.services.ScoreApiService;
 import java.util.List;
@@ -61,7 +61,7 @@ public class ScoreApi {
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     public Response analyzeScore(
-            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) ScoreAnalyzeBody body,
+            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) ScoreResponseBody body,
             @Context SecurityContext securityContext)
             throws NotFoundException {
         return delegate.analyzeScore(body, securityContext);

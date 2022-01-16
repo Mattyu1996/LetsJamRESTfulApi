@@ -12,37 +12,59 @@
 
 package it.univaq.disim.mwt.letsjamrestapi.models;
 
-import javax.annotation.Generated;
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * ScoreAnalyzeBody
  */
-@Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-16T16:33:27.922Z[GMT]")
 public class ScoreAnalyzeBody   {
-  @JsonProperty("score")
-  private String score = null;
+  @JsonProperty("title")
+  private String title = null;
 
-  public ScoreAnalyzeBody score(String score) {
-    this.score = score;
+  @JsonProperty("author")
+  private String author = null;
+
+  public ScoreAnalyzeBody title(String title) {
+    this.title = title;
     return this;
   }
 
   /**
-   * Get score
-   * @return score
+   * Get title
+   * @return title
    **/
-  @JsonProperty("score")
+  @JsonProperty("title")
   @Schema(description = "")
-  public String getScore() {
-    return score;
+  public String getTitle() {
+    return title;
   }
 
-  public void setScore(String score) {
-    this.score = score;
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public ScoreAnalyzeBody author(String author) {
+    this.author = author;
+    return this;
+  }
+
+  /**
+   * Get author
+   * @return author
+   **/
+  @JsonProperty("author")
+  @Schema(description = "")
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
   }
 
 
@@ -55,12 +77,13 @@ public class ScoreAnalyzeBody   {
       return false;
     }
     ScoreAnalyzeBody scoreAnalyzeBody = (ScoreAnalyzeBody) o;
-    return Objects.equals(this.score, scoreAnalyzeBody.score);
+    return Objects.equals(this.title, scoreAnalyzeBody.title) &&
+        Objects.equals(this.author, scoreAnalyzeBody.author);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(score);
+    return Objects.hash(title, author);
   }
 
 
@@ -69,7 +92,8 @@ public class ScoreAnalyzeBody   {
     StringBuilder sb = new StringBuilder();
     sb.append("class ScoreAnalyzeBody {\n");
     
-    sb.append("    score: ").append(toIndentedString(score)).append("\n");
+    sb.append("    title: ").append(toIndentedString(title)).append("\n");
+    sb.append("    author: ").append(toIndentedString(author)).append("\n");
     sb.append("}");
     return sb.toString();
   }
