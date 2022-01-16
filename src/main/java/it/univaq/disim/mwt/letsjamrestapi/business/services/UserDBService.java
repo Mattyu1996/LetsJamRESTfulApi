@@ -7,10 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
+import it.univaq.disim.mwt.letsjamrestapi.models.NewUser;
 import it.univaq.disim.mwt.letsjamrestapi.models.UpdateUserBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.User.RoleEnum;
 
@@ -129,6 +134,26 @@ public class UserDBService {
                 rs.close();
             }
             return utenti;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static User addUser(NewUser body){
+        Connection c = SqlDb.getConnection();
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        try {
+            PreparedStatement st = c.prepareStatement("INSERT INTO utenti (username, firstname, lastname, email, password, role) VALUES (?,?,?,?,?,?)");
+            st.setString(1, body.getUsername());
+            st.setString(2, body.getFirstname());
+            st.setString(3, body.getLastname());
+            st.setString(4, body.getEmail());
+            st.setString(5, encoder.encode(body.getPassword()));
+            st.setString(6, RoleEnum.UTENTE.toString());
+            st.executeUpdate();
+            st.close();
+            return getUserByEmail(body.getEmail()).get(0);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -284,6 +309,52 @@ public class UserDBService {
             PreparedStatement st = c.prepareStatement("DELETE FROM spartiti_likes WHERE user_id = ? AND music_sheet_id = ?");
             st.setLong(1, userId.longValue());
             st.setLong(2, musicsheetId.longValue());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Boolean authenticateUser(String email, String password){
+        return true;
+    }
+
+    public static User getUserFromToken(String token){
+        Connection c = SqlDb.getConnection();
+        try {
+            PreparedStatement st = c.prepareStatement("SELECT * FROM utenti JOIN tokens where token = ?");
+            st.setString(1, token);
+            ResultSet rs = st.executeQuery();
+            try {
+                if (rs.next()) {
+                    return makeUser(rs);
+                }
+            } finally {
+                rs.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void invalidateToken(String token){
+        Connection c = SqlDb.getConnection();
+        try {
+            PreparedStatement st = c.prepareStatement("DELETE FROM tokens WHERE token = ?");
+            st.setString(1, token);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addUserToken(BigDecimal userId, String token){
+        Connection c = SqlDb.getConnection();
+        try {
+            PreparedStatement st = c.prepareStatement("INSERT INTO tokens (user_id, token) VALUES (?,?)");
+            st.setLong(1, userId.longValue());
+            st.setString(2, token);
             st.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

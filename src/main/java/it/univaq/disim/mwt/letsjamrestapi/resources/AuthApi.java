@@ -1,12 +1,26 @@
 package it.univaq.disim.mwt.letsjamrestapi.resources;
 
+import javax.annotation.Generated;
+import javax.servlet.ServletConfig;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.AuthApiServiceFactory;
@@ -14,12 +28,6 @@ import it.univaq.disim.mwt.letsjamrestapi.models.AuthLoginBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewUser;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
 import it.univaq.disim.mwt.letsjamrestapi.services.AuthApiService;
-import javax.annotation.Generated;
-import javax.servlet.ServletConfig;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.*;
 
 @Path("/auth")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
@@ -62,9 +70,10 @@ public class AuthApi {
     })
     public Response addUser(
             @Parameter(in = ParameterIn.DEFAULT, description = "") NewUser body,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext,
+            @Context UriInfo uriInfo)
             throws NotFoundException {
-        return delegate.addUser(body, securityContext);
+        return delegate.addUser(body, securityContext, uriInfo);
     }
 
     @POST
@@ -78,11 +87,10 @@ public class AuthApi {
             @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
-    public Response login(@Parameter(in = ParameterIn.DEFAULT, description = "") AuthLoginBody body
-
-            , @Context SecurityContext securityContext)
+    public Response login(@Parameter(in = ParameterIn.DEFAULT, description = "") AuthLoginBody body,
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException {
-        return delegate.login(body, securityContext);
+        return delegate.login(body, securityContext, uriInfo);
     }
 
     @DELETE
@@ -96,8 +104,23 @@ public class AuthApi {
             @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
-    public Response logout(@Context SecurityContext securityContext)
+    public Response logout(@Context SecurityContext securityContext, @Context ContainerRequestContext req)
             throws NotFoundException {
-        return delegate.logout(securityContext);
+        return delegate.logout(securityContext, req);
+    }
+
+    @GET
+    @Path("/refresh")
+    @Produces({ "text/plain" })
+    @Operation(summary = "Refreshes the jwt token without relog in again", description = "", security = {
+            @SecurityRequirement(name = "bearerAuth") }, tags = { "auth" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful logout"),
+            @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
+            @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
+    })
+    public Response refreshToken(@Context SecurityContext securityContext, @Context ContainerRequestContext req)
+            throws NotFoundException {
+        return delegate.refreshToken(securityContext, req);
     }
 }

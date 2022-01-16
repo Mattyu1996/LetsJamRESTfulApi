@@ -23,29 +23,29 @@ import javax.annotation.Generated;
  */
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public class AuthLoginBody   {
-  @JsonProperty("username")
-  private String username = null;
+  @JsonProperty("email")
+  private String email = null;
 
   @JsonProperty("password")
   private String password = null;
 
-  public AuthLoginBody username(String username) {
-    this.username = username;
+  public AuthLoginBody email(String email) {
+    this.email = email;
     return this;
   }
 
   /**
-   * Get username
-   * @return username
+   * Get email
+   * @return email
    **/
-  @JsonProperty("username")
+  @JsonProperty("email")
   @Schema(description = "")
-  public String getUsername() {
-    return username;
+  public String getEmail() {
+    return email;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public AuthLoginBody password(String password) {
@@ -77,13 +77,13 @@ public class AuthLoginBody   {
       return false;
     }
     AuthLoginBody authLoginBody = (AuthLoginBody) o;
-    return Objects.equals(this.username, authLoginBody.username) &&
+    return Objects.equals(this.email, authLoginBody.email) &&
         Objects.equals(this.password, authLoginBody.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(username, password);
+    return Objects.hash(email, password);
   }
 
 
@@ -92,7 +92,7 @@ public class AuthLoginBody   {
     StringBuilder sb = new StringBuilder();
     sb.append("class AuthLoginBody {\n");
     
-    sb.append("    username: ").append(toIndentedString(username)).append("\n");
+    sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("}");
     return sb.toString();
