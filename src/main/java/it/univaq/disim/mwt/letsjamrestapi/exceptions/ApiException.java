@@ -9,4 +9,13 @@ public class ApiException extends Exception{
         super(msg);
         this.code = code;
     }
+
+    public ApiException (int code) {
+        super();
+        this.code = code;
+    }
+
+    public int getCode(){
+        return this.code;
+    }
 }

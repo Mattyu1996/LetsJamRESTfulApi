@@ -1,12 +1,15 @@
 package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Generated;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+
 import it.univaq.disim.mwt.letsjamrestapi.business.services.UserDBService;
-import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
 import it.univaq.disim.mwt.letsjamrestapi.services.UsersApiService;
 
@@ -15,18 +18,23 @@ public class UsersApiServiceImpl extends UsersApiService {
 
     @Override
     public Response getAllUsers(String email, String username, String role, SecurityContext securityContext)
-            throws NotFoundException {
+            throws ApiException {
 
         List<User> result = new ArrayList<User>();
 
-        if (email != null && !email.isEmpty()) {
-            result = UserDBService.getUserByEmail(email);
-        } else if (username != null && !username.isEmpty()) {
-            result = UserDBService.getUserByUsername(username);
-        } else if (role != null && !role.isEmpty()) {
-            result = UserDBService.getUserByRole(role);
-        } else {
-            result = UserDBService.getAllUsers();
+        try {
+            if (email != null && !email.isEmpty()) {
+                result.add(UserDBService.getUserByEmail(email));
+            } else if (username != null && !username.isEmpty()) {
+                result.add(UserDBService.getUserByUsername(username));
+            } else if (role != null && !role.isEmpty()) {
+                result = UserDBService.getUserByRole(role);
+            } else {
+                result = UserDBService.getAllUsers();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);
         }
 
         return Response.ok().entity(result).build();

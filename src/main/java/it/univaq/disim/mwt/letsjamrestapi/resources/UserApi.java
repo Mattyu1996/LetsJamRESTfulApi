@@ -19,6 +19,8 @@ import it.univaq.disim.mwt.letsjamrestapi.services.UserApiService;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.SQLException;
+
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
@@ -69,7 +71,7 @@ public class UserApi {
     public Response addPreferredGenre(
             @Parameter(in = ParameterIn.PATH, description = "user id", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.PATH, description = "genre id", required = true) @PathParam("genreId") BigDecimal genreId,
-            @Context SecurityContext securityContext) throws NotFoundException {
+            @Context SecurityContext securityContext) throws NotFoundException, SQLException {
         return delegate.addPreferredGenre(userId, genreId, securityContext);
     }
 
@@ -90,7 +92,7 @@ public class UserApi {
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("instrumentId") BigDecimal instrumentId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.addPreferredInstrument(userId, instrumentId, securityContext);
     }
 
@@ -110,7 +112,7 @@ public class UserApi {
     public Response deleteUserById(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.deleteUserById(userId, securityContext);
     }
     
@@ -130,7 +132,7 @@ public class UserApi {
     public Response getUserById(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.getUserById(userId, securityContext);
     }
 
@@ -150,7 +152,7 @@ public class UserApi {
     public Response getUserPreferredGenres(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.getUserPreferredGenres(userId, securityContext);
     }
 
@@ -170,7 +172,7 @@ public class UserApi {
     public Response getUserPreferredInstruments(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.getUserPreferredInstruments(userId, securityContext);
     }
 
@@ -191,7 +193,7 @@ public class UserApi {
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("genreId") BigDecimal genreId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.removePreferredGenre(userId, genreId, securityContext);
     }
 
@@ -211,7 +213,7 @@ public class UserApi {
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("instrumentId") BigDecimal instrumentId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.removePreferredInstrument(userId, instrumentId, securityContext);
     }
 
@@ -234,7 +236,7 @@ public class UserApi {
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.DEFAULT, description = "") InputStream stream,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.updateUserAvatar(userId, stream, securityContext);
     }
 
@@ -256,7 +258,7 @@ public class UserApi {
             @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) UpdateUserBody body,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.updateUserById(body, userId, securityContext);
     }
 }

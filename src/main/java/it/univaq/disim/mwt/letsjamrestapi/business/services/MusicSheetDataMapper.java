@@ -10,6 +10,7 @@ import com.mongodb.BasicDBObject;
 
 import org.bson.Document;
 
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 
 public class MusicSheetDataMapper {
@@ -22,15 +23,15 @@ public class MusicSheetDataMapper {
         return d;
     }
 
-    public static MusicSheetData deserialize(Document d){
+    public static MusicSheetData deserialize(Document d) throws ApiException{
         MusicSheetData data = new MusicSheetData();
         try {
             data.setContent(d.getString("content").toString());
             Map<String, String> map = new ObjectMapper().readValue(((Document) d.get("instrumentMapping")).toJson(), HashMap.class);
             data.setInstrumentMapping(map);
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new ApiException(500);
         }
         return data;
     }

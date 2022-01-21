@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.GenresApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
@@ -56,7 +57,7 @@ public class GenresApi {
          @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
    })
    public Response getAllGenres(@Context SecurityContext securityContext)
-         throws NotFoundException {
+         throws ApiException {
       return delegate.getAllGenres(securityContext);
    }
 }

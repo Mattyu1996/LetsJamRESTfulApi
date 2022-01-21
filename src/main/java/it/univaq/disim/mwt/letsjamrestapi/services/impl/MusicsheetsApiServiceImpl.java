@@ -1,10 +1,11 @@
 package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 
 import it.univaq.disim.mwt.letsjamrestapi.business.services.MusicsheetDBService;
-import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet.MusicSheetSortEnum;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetsApiService;
@@ -21,7 +22,7 @@ public class MusicsheetsApiServiceImpl extends MusicsheetsApiService {
             String sortdirection, List<String> genres,
             List<String> instruments, Boolean verified, Boolean rearranged, Boolean tablature,
             @DecimalMin("0") BigDecimal pagenumber, @DecimalMin("1") BigDecimal pagesize,
-            SecurityContext securityContext) throws NotFoundException {
+            SecurityContext securityContext) throws ApiException {
         String sortBy = null;
         if(sortby != null){
             switch (sortby) {
@@ -41,7 +42,13 @@ public class MusicsheetsApiServiceImpl extends MusicsheetsApiService {
                     break;
             }
         }
-        List<MusicSheet> spartiti = MusicsheetDBService.searchMusicSheets(search, sortBy, sortdirection, genres, instruments, verified, rearranged, tablature, pagenumber, pagesize);
+        List<MusicSheet> spartiti;
+        try {
+            spartiti = MusicsheetDBService.searchMusicSheets(search, sortBy, sortdirection, genres, instruments, verified, rearranged, tablature, pagenumber, pagesize);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);
+        }
         return Response.ok().entity(spartiti).build();
     }
 }

@@ -3,6 +3,7 @@ package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 import java.util.List;
 
 import it.univaq.disim.mwt.letsjamrestapi.business.services.ScoreAnalyzerService;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.ScoreResponseBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.ScoreAnalyzeBody;
@@ -15,7 +16,7 @@ import javax.annotation.Generated;
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public class ScoreApiServiceImpl extends ScoreApiService {
     @Override
-    public Response analyzeScore(ScoreResponseBody body, SecurityContext securityContext) throws NotFoundException {
+    public Response analyzeScore(ScoreResponseBody body, SecurityContext securityContext) throws ApiException {
         ScoreAnalyzerService as = new ScoreAnalyzerService();
         ScoreAnalyzeBody result = new ScoreAnalyzeBody();
         result.setTitle(as.getScoreTitle(body.getScore()));

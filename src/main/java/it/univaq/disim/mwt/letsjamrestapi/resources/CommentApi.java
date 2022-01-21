@@ -1,27 +1,34 @@
 package it.univaq.disim.mwt.letsjamrestapi.resources;
 
+import java.math.BigDecimal;
+
+import javax.annotation.Generated;
+import javax.servlet.ServletConfig;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import java.math.BigDecimal;
-import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.CommentApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
 import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.CommentApiService;
-import javax.annotation.Generated;
-import javax.servlet.ServletConfig;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.*;
 
 @Path("/comment")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
@@ -65,7 +72,7 @@ public class CommentApi {
     public Response getCommentById(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("commentId") BigDecimal commentId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws ApiException {
         return delegate.getCommentById(commentId, securityContext);
     }
 
@@ -85,7 +92,7 @@ public class CommentApi {
     public Response getReplies(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("commentId") BigDecimal commentId,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws ApiException {
         return delegate.getReplies(commentId, securityContext);
     }
 
@@ -106,7 +113,7 @@ public class CommentApi {
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("commentId") BigDecimal commentId,
             @Parameter(in = ParameterIn.DEFAULT, description = "") CommentBody body,
             @Context SecurityContext securityContext)
-            throws NotFoundException {
+            throws ApiException {
         return delegate.updateComment(commentId, body, securityContext);
     }
 }

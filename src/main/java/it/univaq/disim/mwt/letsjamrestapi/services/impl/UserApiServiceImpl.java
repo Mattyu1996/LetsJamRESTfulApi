@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,64 +26,64 @@ import javax.validation.constraints.*;
 public class UserApiServiceImpl extends UserApiService {
     @Override
     public Response addPreferredGenre(@DecimalMin("1") BigDecimal userId, @DecimalMin("1") BigDecimal genreId,
-            SecurityContext securityContext) throws NotFoundException {
+            SecurityContext securityContext) throws NotFoundException, SQLException {
         UserDBService.addUserPreferredGenre(userId, genreId);
         return Response.ok().build();
     }
 
     @Override
     public Response addPreferredInstrument(@DecimalMin("1") BigDecimal userId, @DecimalMin("1") BigDecimal instrumentId,
-            SecurityContext securityContext) throws NotFoundException {
+            SecurityContext securityContext) throws NotFoundException, SQLException {
         UserDBService.addUserPreferredInstrument(userId, instrumentId);
         return Response.ok().build();
     }
 
     @Override
     public Response deleteUserById(@DecimalMin("1") BigDecimal userId, SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         UserDBService.deleteUser(userId);
         return Response.ok().build();
     }
 
     @Override
     public Response getUserById(@DecimalMin("1") BigDecimal userId, SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return Response.ok().entity(UserDBService.getUserById(userId)).build();
     }
 
     @Override
     public Response getUserPreferredGenres(@DecimalMin("1") BigDecimal userId, SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         List<Genre> generi = UserDBService.getUserPreferredGenres(userId);
         return Response.ok().entity(generi).build();
     }
 
     @Override
     public Response getUserPreferredInstruments(@DecimalMin("1") BigDecimal userId, SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         List<Instrument> strumenti = UserDBService.getUserPreferredInstruments(userId);
         return Response.ok().entity(strumenti).build();
     }
 
     @Override
     public Response removePreferredGenre(@DecimalMin("1") BigDecimal userId, @DecimalMin("1") BigDecimal genreId,
-            SecurityContext securityContext) throws NotFoundException {
+            SecurityContext securityContext) throws NotFoundException, SQLException {
         UserDBService.removeUserPreferredGenre(userId, genreId);
         return Response.ok().build();
     }
 
     @Override
     public Response removePreferredInstrument(@DecimalMin("1") BigDecimal userId,
-            @DecimalMin("1") BigDecimal instrumentId, SecurityContext securityContext) throws NotFoundException {
+            @DecimalMin("1") BigDecimal instrumentId, SecurityContext securityContext) throws NotFoundException, SQLException {
         UserDBService.removeUserPreferredInstrument(userId, instrumentId);
         return Response.ok().build();
     }
 
     @Override
     public Response updateUserAvatar(@DecimalMin("1") BigDecimal userId, InputStream stream, SecurityContext securityContext)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         OutputStream os = null; 
-        User loggedUser = UserDBService.getUserById(BigDecimal.valueOf((long)4)).get(0);
+        User loggedUser = UserDBService.getUserById(BigDecimal.valueOf((long)4));
         try {
             String filename = Objects.hash(loggedUser.getEmail(), loggedUser.getId())+".jpg";
             String filepath = new File((new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\uploads\\").getCanonicalPath()), filename).getCanonicalPath();
@@ -110,7 +111,7 @@ public class UserApiServiceImpl extends UserApiService {
 
     @Override
     public Response updateUserById(UpdateUserBody body, @DecimalMin("1") BigDecimal userId,
-            SecurityContext securityContext) throws NotFoundException {
+            SecurityContext securityContext) throws NotFoundException, SQLException {
         User u = UserDBService.updateUser(userId, body);
         return Response.ok().entity(u).build();
     }

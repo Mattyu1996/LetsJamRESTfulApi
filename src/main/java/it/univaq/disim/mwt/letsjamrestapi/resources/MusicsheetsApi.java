@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.math.BigDecimal;
 import java.util.List;
+
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.MusicsheetsApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
@@ -73,7 +75,7 @@ public class MusicsheetsApi {
          @Parameter(in = ParameterIn.QUERY, description = "The number of the page to skip before collect musicsheets") @QueryParam("pagenumber") BigDecimal pagenumber,
          @Parameter(in = ParameterIn.QUERY, description = "The number elements to return") @QueryParam("pagesize") BigDecimal pagesize,
          @Context SecurityContext securityContext)
-         throws NotFoundException {
+         throws ApiException {
       return delegate.getAllMusicSheets(search, sortby, sortdirection, genres, instruments, verified, rearranged,
             tablature, pagenumber, pagesize, securityContext);
    }

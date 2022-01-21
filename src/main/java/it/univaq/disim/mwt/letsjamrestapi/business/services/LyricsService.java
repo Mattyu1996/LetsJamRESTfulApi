@@ -4,16 +4,17 @@ import java.util.List;
 
 import core.GLA;
 import genius.Lyrics;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 
 public class LyricsService {
     private GLA genius;
 
-    public LyricsService(){
+    public LyricsService() throws ApiException{
         init();
     }
 
-    public void init(){
+    public void init() throws ApiException{
         this.genius = new GLA(ConfigGateway.getGeniusClientId(), ConfigGateway.getGeniusAccessToken());
     }
 

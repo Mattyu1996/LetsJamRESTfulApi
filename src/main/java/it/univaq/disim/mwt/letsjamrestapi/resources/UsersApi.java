@@ -9,11 +9,15 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.UsersApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
 import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.UsersApiService;
+
+import java.sql.SQLException;
+
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
 import javax.ws.rs.GET;
@@ -66,7 +70,7 @@ public class UsersApi {
          @Parameter(in = ParameterIn.QUERY, description = "Filter by user role", schema = @Schema(allowableValues = {
                "UTENTE", "AMMINISTRATORE" })) @QueryParam("role") String role,
          @Context SecurityContext securityContext)
-         throws NotFoundException {
+         throws ApiException {
       return delegate.getAllUsers(email, username, role, securityContext);
    }
 }

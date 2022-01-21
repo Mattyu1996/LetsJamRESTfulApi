@@ -1,5 +1,7 @@
 package it.univaq.disim.mwt.letsjamrestapi.resources;
 
+import java.sql.SQLException;
+
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
 import javax.ws.rs.Consumes;
@@ -22,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.AuthApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.AuthLoginBody;
@@ -73,7 +76,7 @@ public class AuthApi {
             @Parameter(in = ParameterIn.DEFAULT, description = "") NewUser body,
             @Context SecurityContext securityContext,
             @Context UriInfo uriInfo)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.addUser(body, securityContext, uriInfo);
     }
 
@@ -90,7 +93,7 @@ public class AuthApi {
     })
     public Response login(@Parameter(in = ParameterIn.DEFAULT, description = "") AuthLoginBody body,
             @Context SecurityContext securityContext, @Context UriInfo uriInfo)
-            throws NotFoundException {
+            throws ApiException {
         return delegate.login(body, securityContext, uriInfo);
     }
 
@@ -106,7 +109,7 @@ public class AuthApi {
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     public Response logout(@Context SecurityContext securityContext, @Context ContainerRequestContext req)
-            throws NotFoundException {
+            throws NotFoundException, SQLException {
         return delegate.logout(securityContext, req);
     }
 

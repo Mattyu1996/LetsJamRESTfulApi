@@ -13,58 +13,44 @@ import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 
 public class GenreDBService {
     
-    public static Genre makeGenre(ResultSet rs) {
+    public static Genre makeGenre(ResultSet rs) throws SQLException {
         Genre g = new Genre();
-        try {
-            g.setId(new BigDecimal(rs.getLong("id")));
-            g.setName(rs.getString("name"));
-            g.setDescription(rs.getString("description"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        g.setId(new BigDecimal(rs.getLong("id")));
+        g.setName(rs.getString("name"));
+        g.setDescription(rs.getString("description"));
         return g;
     }
 
-    public static List<Genre> getAllGenres(){
+    public static List<Genre> getAllGenres() throws SQLException{
         Connection c = SqlDb.getConnection();
+        List<Genre> generi = new ArrayList<Genre>();
+        String query = "SELECT * FROM generi";
+        PreparedStatement st = c.prepareStatement(query);
+        ResultSet rs = st.executeQuery();
         try {
-            List<Genre> generi = new ArrayList<Genre>();
-            String query = "SELECT * FROM generi";
-            PreparedStatement st = c.prepareStatement(query);
-            ResultSet rs = st.executeQuery();
-            try {
-                while (rs.next()) {
-                    generi.add(makeGenre(rs));
-                }
-                return generi;
-            } finally {
-                rs.close();
+            while (rs.next()) {
+                generi.add(makeGenre(rs));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return generi;
+        } finally {
+            rs.close();
         }
-        return null;
     }
     
-    public static Genre getGenreById(BigDecimal genreId){
+    public static Genre getGenreById(BigDecimal genreId) throws SQLException{
         Connection c = SqlDb.getConnection();
+        List<Genre> generi = new ArrayList<Genre>();
+        String query = "SELECT * FROM generi WHERE id = ?";
+        PreparedStatement st = c.prepareStatement(query);
+        st.setLong(1, genreId.longValue());
+        ResultSet rs = st.executeQuery();
         try {
-            List<Genre> generi = new ArrayList<Genre>();
-            String query = "SELECT * FROM generi WHERE id = ?";
-            PreparedStatement st = c.prepareStatement(query);
-            st.setLong(1, genreId.longValue());
-            ResultSet rs = st.executeQuery();
-            try {
-                while (rs.next()) {
-                    generi.add(makeGenre(rs));
-                }
-                return generi.get(0);
-            } finally {
-                rs.close();
+            while (rs.next()) {
+                generi.add(makeGenre(rs));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return generi.get(0);
+        } finally {
+            rs.close();
         }
-        return null;
     }
 }

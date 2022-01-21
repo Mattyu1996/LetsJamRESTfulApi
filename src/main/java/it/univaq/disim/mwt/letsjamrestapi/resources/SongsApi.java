@@ -13,6 +13,7 @@ import it.univaq.disim.mwt.letsjamrestapi.factories.SongsApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.SongsApiService;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -73,8 +74,7 @@ public class SongsApi {
                "ALBUM", "SINGLE", "COLLECTION" })) @QueryParam("albumtype") String albumtype,
          @Parameter(in = ParameterIn.QUERY, description = "The number of the page to skip before collect songs") @QueryParam("pagenumber") BigDecimal pagenumber,
          @Parameter(in = ParameterIn.QUERY, description = "The number elements to return") @QueryParam("pagesize") BigDecimal pagesize,
-         @Context SecurityContext securityContext)
-         throws NotFoundException {
+         @Context SecurityContext securityContext) throws NotFoundException, ApiException {
       return delegate.getSongs(search, sortby, sortdirection, genres, explicit, hasLyrics, albumtype, pagenumber,
             pagesize, securityContext);
    }

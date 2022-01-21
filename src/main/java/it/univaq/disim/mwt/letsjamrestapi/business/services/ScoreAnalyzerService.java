@@ -10,6 +10,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 
 public class ScoreAnalyzerService {
@@ -89,23 +90,23 @@ public class ScoreAnalyzerService {
         return new ArrayList<Instrument>(instruments);
     }
 
-    public String getScoreTitle(String jsonString) {
+    public String getScoreTitle(String jsonString) throws ApiException {
         try {
             JSONObject json = new JSONObject(jsonString);
             return json.query("/score-partwise/work/work-title").toString();
         } catch (Exception e) {
-            System.out.println("Titolo non trovato");
-            return "";
+            e.printStackTrace();
+            throw new ApiException(500);
         }
     }
 
-    public String getScoreAuthor(String jsonString) {
+    public String getScoreAuthor(String jsonString) throws ApiException {
         try {
             JSONObject json = new JSONObject(jsonString);
             return json.query("/score-partwise/identification/creator/content").toString();
         } catch (Exception e) {
-            System.out.println("Autore non trovato");
-            return "";
+            e.printStackTrace();
+            throw new ApiException(500);
         }
     }
 

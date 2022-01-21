@@ -3,10 +3,8 @@ package it.univaq.disim.mwt.letsjamrestapi;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-
 import it.univaq.disim.mwt.letsjamrestapi.resources.AuthApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.CommentApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.GenresApi;
@@ -19,13 +17,10 @@ import it.univaq.disim.mwt.letsjamrestapi.resources.SongApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.SongsApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.UserApi;
 import it.univaq.disim.mwt.letsjamrestapi.resources.UsersApi;
+import it.univaq.disim.mwt.letsjamrestapi.security.AppExceptionMapper;
 import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1Filter;
 import it.univaq.disim.mwt.letsjamrestapi.security.CORSFilter;
 
-/**
- *
- * @author didattica
- */
 @ApplicationPath("rest")
 public class RESTApp extends Application {
 
@@ -33,8 +28,7 @@ public class RESTApp extends Application {
 
     public RESTApp() {
         HashSet<Class<?>> c = new HashSet<Class<?>>();
-        //aggiungiamo tutte le *root resurces* (cioè quelle
-        //con l'annotazione Path) che vogliamo pubblicare
+        // Risorse
         c.add(UsersApi.class);
         c.add(UserApi.class);
         c.add(SongsApi.class);
@@ -46,33 +40,26 @@ public class RESTApp extends Application {
         c.add(GenresApi.class);
         c.add(CommentApi.class);
         c.add(AuthApi.class);
-        
-        //aggiungiamo il provider Jackson per poter
-        //usare i suoi servizi di serializzazione e 
-        //deserializzazione JSON
+
+        // Provider Jackson per la serializzazione delle date
         c.add(JacksonJsonProvider.class);
 
-        //necessario se vogliamo una (de)serializzazione custom di qualche classe    
-        //c.add(ObjectMapperContextResolver.class);
-
-        //esempio di autenticazione
+        // Filtro che gestisce l'autenticazione
         c.add(AuthLevel1Filter.class);
-        
-        //aggiungiamo il filtro che gestisce gli header CORS
+
+        // Filtro che gestisce gli header CORS
         c.add(CORSFilter.class);
 
-        //esempio di exception mapper, che mappa in Response eccezioni non già derivanti da WebApplicationException
-        //c.add(AppExceptionMapper.class);
+        // ExceptionMapper
+        c.add(AppExceptionMapper.class);
 
-        
-        System.out.println("READY");
         classes = Collections.unmodifiableSet(c);
     }
 
-    //l'override di questo metodo deve restituire il set
-    //di classi che Jersey utilizzerà per pubblicare il
-    //servizio. Tutte le altre, anche se annotate, verranno
-    //IGNORATE
+    // l'override di questo metodo deve restituire il set
+    // di classi che Jersey utilizzerà per pubblicare il
+    // servizio. Tutte le altre, anche se annotate, verranno
+    // IGNORATE
     @Override
     public Set<Class<?>> getClasses() {
         return classes;

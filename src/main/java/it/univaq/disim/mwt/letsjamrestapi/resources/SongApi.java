@@ -20,12 +20,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.SongApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.services.SongApiService;
-
 
 @Path("/song")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
@@ -69,7 +68,7 @@ public class SongApi {
    public Response getSongById(
          @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("songId") BigDecimal songId,
          @Context SecurityContext securityContext)
-         throws NotFoundException {
+         throws ApiException {
       return delegate.getSongById(songId, securityContext);
    }
 }

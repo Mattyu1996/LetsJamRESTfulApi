@@ -17,6 +17,8 @@ import org.bson.Document;
 
 import it.univaq.disim.mwt.letsjamrestapi.business.MongoDb;
 import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
@@ -24,55 +26,46 @@ import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 
 public class MusicsheetDBService {
     
-    public static MusicSheet makeMusicsheet(ResultSet rs) {
+    public static MusicSheet makeMusicsheet(ResultSet rs) throws NotFoundException, SQLException {
         MusicSheet m = new MusicSheet();
-        try {
-            m.setId(new BigDecimal(rs.getLong("id")));
-            m.setTitle(rs.getString("title"));
-            m.setAuthor(rs.getString("author"));
-            m.setCreateDateTime(rs.getDate("create_date_time"));
-            m.setUpdateDateTime(rs.getDate("update_date_time"));
-            m.setHasTablature(rs.getBoolean("has_tablature"));
-            m.setRearranged(rs.getBoolean("rearranged"));
-            m.setVerified(rs.getBoolean("verified"));
-            m.setVisibility(rs.getBoolean("visibility"));
-            m.setLikes(BigDecimal.valueOf(rs.getLong("likes")));
-            m.setUser(UserDBService.getUserById(BigDecimal.valueOf(rs.getLong("user_id"))).get(0));
-            m.setSong(SongDBService.getSongById(BigDecimal.valueOf(rs.getLong("song_id"))));
-            m.setInstruments(InstrumentDBService.getMusicsheetInstruments(m.getId()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        m.setId(new BigDecimal(rs.getLong("id")));
+        m.setTitle(rs.getString("title"));
+        m.setAuthor(rs.getString("author"));
+        m.setCreateDateTime(rs.getDate("create_date_time"));
+        m.setUpdateDateTime(rs.getDate("update_date_time"));
+        m.setHasTablature(rs.getBoolean("has_tablature"));
+        m.setRearranged(rs.getBoolean("rearranged"));
+        m.setVerified(rs.getBoolean("verified"));
+        m.setVisibility(rs.getBoolean("visibility"));
+        m.setLikes(BigDecimal.valueOf(rs.getLong("likes")));
+        m.setUser(UserDBService.getUserById(BigDecimal.valueOf(rs.getLong("user_id"))));
+        m.setSong(SongDBService.getSongById(BigDecimal.valueOf(rs.getLong("song_id"))));
+        m.setInstruments(InstrumentDBService.getMusicsheetInstruments(m.getId()));
         return m;
     }
 
-    public static MusicSheet getMusicsheetById(BigDecimal musicsheetId){
+    public static MusicSheet getMusicsheetById(BigDecimal musicsheetId) throws NotFoundException, SQLException{
         Connection c = SqlDb.getConnection();
+        String query = "SELECT *, (SELECT COUNT(music_sheet_id) FROM spartiti_likes WHERE music_sheet_id = ?) as likes FROM spartiti WHERE id = ?";
+        PreparedStatement st = c.prepareStatement(query);
+        st.setLong(1, musicsheetId.longValue());
+        st.setLong(2, musicsheetId.longValue());
+        ResultSet rs = st.executeQuery();
         try {
-            String query = "SELECT *, (SELECT COUNT(music_sheet_id) FROM spartiti_likes WHERE music_sheet_id = ?) as likes FROM spartiti WHERE id = ?";
-            PreparedStatement st = c.prepareStatement(query);
-            st.setLong(1, musicsheetId.longValue());
-            st.setLong(2, musicsheetId.longValue());
-            ResultSet rs = st.executeQuery();
-            try {
-                if (rs.next()) {
-                    return makeMusicsheet(rs);
-                }
-            } finally {
-                rs.close();
-                c.close();
+            if (rs.next()) {
+                return makeMusicsheet(rs);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } finally {
+            rs.close();
         }
-        return null;
+        throw new NotFoundException("MusicSheet not found");
     }
 
     public static List<MusicSheet> searchMusicSheets(
         String search, String sortBy, 
         String sortDirection, List<String> genres, 
         List<String> instruments, Boolean verified, 
-        Boolean rearranged, Boolean tablature, BigDecimal pageNumber, BigDecimal pageSize){
+        Boolean rearranged, Boolean tablature, BigDecimal pageNumber, BigDecimal pageSize) throws NotFoundException, SQLException{
         
         Connection c = SqlDb.getConnection();
         String q = "SELECT *, (SELECT COUNT(music_sheet_id) FROM spartiti_likes WHERE music_sheet_id = spartiti.id) as likes FROM spartiti JOIN brani ON song_id = brani.id JOIN generi ON brani.genre_id = generi.id ";
@@ -151,43 +144,38 @@ public class MusicsheetDBService {
             q+="LIMIT ? OFFSET ? ";
         }
         		
-		try {
-            PreparedStatement stmt = c.prepareStatement(q);
-            int indexCounter = 0;
-            if(search != null && search.length() > 0) {
-                for(int i=0; i < 4; i++) stmt.setString(++indexCounter, search);
-            }
-            if(!genres.isEmpty()) {
-                for(int i=0; i < genres.size(); i++) stmt.setString(++indexCounter, genres.get(i));
-            }
-            if(!instruments.isEmpty()){
-                for(int i=0; i < instruments.size(); i++) stmt.setString(++indexCounter, instruments.get(i));
-            }
-            if(verified != null && verified) stmt.setBoolean(++indexCounter, verified);
-            if(rearranged != null && rearranged) stmt.setBoolean(++indexCounter, rearranged);
-            if(tablature != null && tablature) stmt.setBoolean(++indexCounter, tablature);
-            if(pageSize != null && pageNumber != null){
-                stmt.setLong(++indexCounter, pageSize.longValue());
-                stmt.setLong(++indexCounter, pageSize.longValue()*pageNumber.longValue());
-            }
-
-            List<MusicSheet> spartiti = new ArrayList<MusicSheet>();
-            ResultSet rs = stmt.executeQuery();
-            try {
-                while (rs.next()) {
-                    spartiti.add(makeMusicsheet(rs));
-                }
-                return spartiti;
-            } finally {
-                rs.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+		PreparedStatement stmt = c.prepareStatement(q);
+        int indexCounter = 0;
+        if(search != null && search.length() > 0) {
+            for(int i=0; i < 4; i++) stmt.setString(++indexCounter, search);
         }
-        return null;
+        if(!genres.isEmpty()) {
+            for(int i=0; i < genres.size(); i++) stmt.setString(++indexCounter, genres.get(i));
+        }
+        if(!instruments.isEmpty()){
+            for(int i=0; i < instruments.size(); i++) stmt.setString(++indexCounter, instruments.get(i));
+        }
+        if(verified != null && verified) stmt.setBoolean(++indexCounter, verified);
+        if(rearranged != null && rearranged) stmt.setBoolean(++indexCounter, rearranged);
+        if(tablature != null && tablature) stmt.setBoolean(++indexCounter, tablature);
+        if(pageSize != null && pageNumber != null){
+            stmt.setLong(++indexCounter, pageSize.longValue());
+            stmt.setLong(++indexCounter, pageSize.longValue()*pageNumber.longValue());
+        }
+
+        List<MusicSheet> spartiti = new ArrayList<MusicSheet>();
+        ResultSet rs = stmt.executeQuery();
+        try {
+            while (rs.next()) {
+                spartiti.add(makeMusicsheet(rs));
+            }
+            return spartiti;
+        } finally {
+            rs.close();
+        }
 	}
 
-    public static MusicSheetData getMusicsheetData(BigDecimal musicsheetId){
+    public static MusicSheetData getMusicsheetData(BigDecimal musicsheetId) throws ApiException{
         MongoClient conn = MongoDb.getConnection();
         MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
         BasicDBObject query = new BasicDBObject();
@@ -204,83 +192,62 @@ public class MusicsheetDBService {
         collection.insertOne(MusicSheetDataMapper.serialize(data, musicsheetId));
     }
 
-    public static BigDecimal addMusicSheet(MusicSheet m){
+    public static BigDecimal addMusicSheet(MusicSheet m) throws SQLException, NotFoundException{
         Connection c = SqlDb.getConnection();
-        try {
-            String insertMusicSheetQuery = "INSERT INTO spartiti (create_date_time, title, author, user_id, song_id, rearranged, has_tablature, visibility, verified) ";
-            insertMusicSheetQuery+="VALUES(CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)";
-            PreparedStatement insertMusicSheet = c.prepareStatement(insertMusicSheetQuery, Statement.RETURN_GENERATED_KEYS);
-            insertMusicSheet.setString(1, m.getTitle());
-            insertMusicSheet.setString(2, m.getAuthor());
-            insertMusicSheet.setLong(3, m.getUser().getId().longValue());
-            insertMusicSheet.setLong(4, m.getSong().getId().longValue());
-            insertMusicSheet.setBoolean(5, m.isRearranged());
-            insertMusicSheet.setBoolean(6, m.isHasTablature());
-            insertMusicSheet.setBoolean(7, m.isVisibility());
-            insertMusicSheet.setBoolean(8, m.isVerified());
-            insertMusicSheet.executeUpdate();
-            ResultSet rs = insertMusicSheet.getGeneratedKeys();
-            BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
-            m.setId(id);
-            insertMusicSheetInstruments(m);
-            rs.close();
-            return id;
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+        String insertMusicSheetQuery = "INSERT INTO spartiti (create_date_time, title, author, user_id, song_id, rearranged, has_tablature, visibility, verified) ";
+        insertMusicSheetQuery+="VALUES(CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)";
+        PreparedStatement insertMusicSheet = c.prepareStatement(insertMusicSheetQuery, Statement.RETURN_GENERATED_KEYS);
+        insertMusicSheet.setString(1, m.getTitle());
+        insertMusicSheet.setString(2, m.getAuthor());
+        insertMusicSheet.setLong(3, m.getUser().getId().longValue());
+        insertMusicSheet.setLong(4, m.getSong().getId().longValue());
+        insertMusicSheet.setBoolean(5, m.isRearranged());
+        insertMusicSheet.setBoolean(6, m.isHasTablature());
+        insertMusicSheet.setBoolean(7, m.isVisibility());
+        insertMusicSheet.setBoolean(8, m.isVerified());
+        insertMusicSheet.executeUpdate();
+        ResultSet rs = insertMusicSheet.getGeneratedKeys();
+        BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
+        m.setId(id);
+        insertMusicSheetInstruments(m);
+        rs.close();
+        return id;
     }
 
-    public static void insertMusicSheetInstruments(MusicSheet m){
+    public static void insertMusicSheetInstruments(MusicSheet m) throws SQLException, NotFoundException{
         Connection c = SqlDb.getConnection();
         String instrumentsQuery = "INSERT INTO spartiti_strumenti (music_sheet_id, instrument_id) VALUES (?,?)";
-        try {
-            PreparedStatement instruments = c.prepareStatement(instrumentsQuery);
-            List<Instrument> strumenti = m.getInstruments();
-            for(int i=0; i < strumenti.size(); i++){
-                Instrument listInstrument = strumenti.get(i);
-                Instrument dbInstrument = InstrumentDBService.getInstrumentByName(listInstrument.getName());
-                if(dbInstrument == null) {
-                    listInstrument.setId(InstrumentDBService.addInstrument(listInstrument.getName())); 
-                }
-                else{
-                    listInstrument = dbInstrument;
-                }
-                try {
-                    instruments.setLong(1, m.getId().longValue());
-                    instruments.setLong(2, listInstrument.getId().longValue());
-                    instruments.executeUpdate();
-                } catch (SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+        PreparedStatement instruments = c.prepareStatement(instrumentsQuery);
+        List<Instrument> strumenti = m.getInstruments();
+        for(int i=0; i < strumenti.size(); i++){
+            Instrument listInstrument = strumenti.get(i);
+            Instrument dbInstrument = InstrumentDBService.getInstrumentByName(listInstrument.getName());
+            if(dbInstrument == null) {
+                listInstrument.setId(InstrumentDBService.addInstrument(listInstrument.getName())); 
             }
-            c.close();
-        } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            else{
+                listInstrument = dbInstrument;
+            }
+            instruments.setLong(1, m.getId().longValue());
+            instruments.setLong(2, listInstrument.getId().longValue());
+            instruments.executeUpdate();
         }
+        c.close();
     }
 
 
-    public static void deleteMusicSheet(BigDecimal musicsheetId){
+    public static void deleteMusicSheet(BigDecimal musicsheetId) throws SQLException{
         Connection c = SqlDb.getConnection();
-        try {
-            PreparedStatement st = c.prepareStatement("DELETE FROM spartiti WHERE id = ?");
-            st.setLong(1, musicsheetId.longValue());
-            st.executeUpdate();
-            st = c.prepareStatement("DELETE FROM spartiti_strumenti WHERE music_sheet_id = ?");
-            st.setLong(1, musicsheetId.longValue());
-            st.executeUpdate();
-            st = c.prepareStatement("DELETE FROM spartiti_likes WHERE music_sheet_id = ?");
-            st.setLong(1, musicsheetId.longValue());
-            st.executeUpdate();
-            c.close();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        PreparedStatement st = c.prepareStatement("DELETE FROM spartiti WHERE id = ?");
+        st.setLong(1, musicsheetId.longValue());
+        st.executeUpdate();
+        st = c.prepareStatement("DELETE FROM spartiti_strumenti WHERE music_sheet_id = ?");
+        st.setLong(1, musicsheetId.longValue());
+        st.executeUpdate();
+        st = c.prepareStatement("DELETE FROM spartiti_likes WHERE music_sheet_id = ?");
+        st.setLong(1, musicsheetId.longValue());
+        st.executeUpdate();
+        c.close();
 
         MongoClient client = MongoDb.getConnection();
         MongoCollection<Document> collection = client.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
@@ -289,20 +256,15 @@ public class MusicsheetDBService {
         collection.deleteOne(query);
     }
 
-    public static void updateMusicSheet(UpdateMusicsheetBody body, BigDecimal musicsheetId){
+    public static void updateMusicSheet(UpdateMusicsheetBody body, BigDecimal musicsheetId) throws SQLException{
         Connection c = SqlDb.getConnection();
-        try {
-            PreparedStatement st = c.prepareStatement("UPDATE spartiti SET title=?, author=?, visibility=? WHERE id = ?");
-            st.setString(1, body.getTitle());
-            st.setString(2, body.getAuthor());
-            st.setBoolean(3, body.isVisibility());
-            st.setLong(4, musicsheetId.longValue());
-            st.executeUpdate();
-            c.close();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        PreparedStatement st = c.prepareStatement("UPDATE spartiti SET title=?, author=?, visibility=? WHERE id = ?");
+        st.setString(1, body.getTitle());
+        st.setString(2, body.getAuthor());
+        st.setBoolean(3, body.isVisibility());
+        st.setLong(4, musicsheetId.longValue());
+        st.executeUpdate();
+        c.close();
 
         MongoClient client = MongoDb.getConnection();
         MongoCollection<Document> collection = client.getDatabase(MongoDb.DBNAME).getCollection("spartiti");

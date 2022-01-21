@@ -1,8 +1,10 @@
 package it.univaq.disim.mwt.letsjamrestapi.services;
 
 import java.math.BigDecimal;
-
+import java.sql.SQLException;
 import java.util.List;
+
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -18,5 +20,5 @@ public abstract class MusicsheetsApiService {
             Boolean rearranged, Boolean tablature,
             @DecimalMin("0") BigDecimal pagenumber,
             @DecimalMin("1") BigDecimal pagesize,
-            SecurityContext securityContext) throws NotFoundException;
+            SecurityContext securityContext) throws ApiException;
 }

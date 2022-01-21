@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.hc.core5.http.ParseException;
 
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -23,11 +24,11 @@ public class SpotifyService {
     private SpotifyApi spotifyApi;
     private ClientCredentialsRequest clientCredentialsRequest;
 
-    public SpotifyService(){
+    public SpotifyService() throws ApiException{
         init();
     }
 
-    public void init(){
+    public void init() throws ApiException{
         try {
             this.spotifyApi = new SpotifyApi.Builder()
             .setClientId(ConfigGateway.getSpotifyClientId())
@@ -36,22 +37,24 @@ public class SpotifyService {
             this.clientCredentialsRequest = spotifyApi.clientCredentials().build();
             getAccessToken();   
         } catch (Exception e) {
-            System.out.println(e.getStackTrace());
+            e.printStackTrace();
+            throw new ApiException(500);
         }
     }
     
-    private void getAccessToken(){
+    private void getAccessToken() throws ApiException{
         try {
             final ClientCredentials clientCredentials = clientCredentialsRequest.execute();
             // Set access token for further "spotifyApi" object usage
             spotifyApi.setAccessToken(clientCredentials.getAccessToken());
             System.out.println("Expires in: " + clientCredentials.getExpiresIn());
         } catch (SpotifyWebApiException | ParseException | IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+            throw new ApiException(500);
         }
     }
 
-    public void setSongInfo(Song song){
+    public void setSongInfo(Song song) throws ApiException{
         String q = "artist:"+ song.getAuthor() + " track:" + song.getTitle();
         SearchTracksRequest request = spotifyApi.searchTracks(q)
                 .build();        
@@ -77,15 +80,12 @@ public class SpotifyService {
             }
 
         } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
-            if(e.getMessage().equals("The access token expired")){
-                getAccessToken();
-            }
+            handleException(e);
         }
     }
 
 
-    public List<Track> searchSong(String searchString){
+    public List<Track> searchSong(String searchString) throws ApiException{
         //String q = "artist:"+ author + " track:" + title;
         SearchTracksRequest request = spotifyApi.searchTracks(searchString).build();
         try {
@@ -93,15 +93,12 @@ public class SpotifyService {
             List<Track> result = List.of(tracks.getItems());
             return result;
         } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println("Error: " + e.getMessage());
-            if(e.getMessage().equals("The access token expired")){
-                getAccessToken();
-            }
+            handleException(e);
         }
         return new ArrayList<Track>();
     }
 
-    public Song getSongFromSpotifyId(String spotifyId){
+    public Song getSongFromSpotifyId(String spotifyId) throws ApiException{
         GetTrackRequest request = spotifyApi.getTrack(spotifyId).build();
         try{
             Track traccia = request.execute();
@@ -122,12 +119,19 @@ public class SpotifyService {
             song.setSpotifyId(traccia.getId());
             return song;
         }catch(Exception e){
-            System.out.println("Error: " + e.getMessage());
-            if(e.getMessage().equals("The access token expired")){
-                getAccessToken();
-            }
+            handleException(e);
         }
         return null;
+    }
+    
+    public void handleException(Exception e) throws ApiException{
+        if(e.getMessage().equals("The access token expired")){
+            getAccessToken();
+        }
+        else{
+            e.printStackTrace();
+            throw new ApiException(500);
+        }
     }
     
 }

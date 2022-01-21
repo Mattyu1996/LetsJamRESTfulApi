@@ -1,6 +1,7 @@
 package it.univaq.disim.mwt.letsjamrestapi.services.impl;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import it.univaq.disim.mwt.letsjamrestapi.business.services.ScoreAnalyzerService
 import it.univaq.disim.mwt.letsjamrestapi.business.services.SongDBService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.SpotifyService;
 import it.univaq.disim.mwt.letsjamrestapi.business.services.UserDBService;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
@@ -34,20 +36,24 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
 
     @Override
     public Response addComment(@DecimalMin("1") BigDecimal musicsheetId, CommentBody body,
-            BigDecimal parent, SecurityContext securityContext) throws NotFoundException {
-        CommentDBService.addCommentToMusicsheet(musicsheetId, parent, body, BigDecimal.valueOf(4));
+            BigDecimal parent, SecurityContext securityContext) throws ApiException {
+        try {
+            CommentDBService.addCommentToMusicsheet(musicsheetId, parent, body, BigDecimal.valueOf(4));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);        }
         return Response.ok().build();
     }
 
     @Override
     public Response addLike(@DecimalMin("1") BigDecimal musicsheetId, @DecimalMin("1") BigDecimal userId,
-            SecurityContext securityContext) throws NotFoundException {
+            SecurityContext securityContext) throws NotFoundException, SQLException {
         UserDBService.addLike(userId, musicsheetId);
         return Response.ok().build();
     }
 
     @Override
-    public Response addMusicSheet(NewMusicSheet body, SecurityContext securityContext) throws NotFoundException {
+    public Response addMusicSheet(NewMusicSheet body, SecurityContext securityContext) throws SQLException, ApiException {
 
         ScoreAnalyzerService as = new ScoreAnalyzerService();
         Map<String, String> mappings = as.getInstruments(body.getContent());
@@ -62,7 +68,7 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
         spartito.setHasTablature(as.hasTablature(body.getContent()));
         spartito.setTitle(body.getTitle());
         spartito.setAuthor(body.getAuthor());
-        spartito.setUser(UserDBService.getUserById(BigDecimal.valueOf((long) 4)).get(0));
+        spartito.setUser(UserDBService.getUserById(BigDecimal.valueOf((long) 4)));
         spartito.setRearranged(body.isRearranged());
         spartito.setVerified(false);
         spartito.setVisibility(body.isVisibility());
@@ -97,43 +103,64 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
 
     @Override
     public Response deleteMusicSheetById(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
-            throws NotFoundException {
-        MusicsheetDBService.deleteMusicSheet(musicsheetId);
+            throws ApiException {
+        try {
+            MusicsheetDBService.deleteMusicSheet(musicsheetId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);
+        }
         return Response.ok().build();
     }
 
     @Override
     public Response getMusicSheetById(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
-            throws NotFoundException {
-        MusicSheet spartito = MusicsheetDBService.getMusicsheetById(musicsheetId);
+            throws ApiException {
+        MusicSheet spartito;
+        try {
+            spartito = MusicsheetDBService.getMusicsheetById(musicsheetId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);
+        }
         return Response.ok().entity(spartito).build();
     }
 
     @Override
     public Response getMusicSheetComments(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
-            throws NotFoundException {
-        List<Comment> commenti = CommentDBService.getMusicsheetComments(musicsheetId);
+            throws ApiException {
+        List<Comment> commenti;
+        try {
+            commenti = CommentDBService.getMusicsheetComments(musicsheetId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);
+        }
         return Response.ok().entity(commenti).build();
     }
 
     @Override
     public Response getMusicSheetData(@DecimalMin("1") BigDecimal musicsheetId, SecurityContext securityContext)
-            throws NotFoundException {
+            throws ApiException {
         MusicSheetData data = MusicsheetDBService.getMusicsheetData(musicsheetId);
         return Response.ok().entity(data).build();
     }
 
     @Override
     public Response removeLike(@DecimalMin("1") BigDecimal musicsheetId, @DecimalMin("1") BigDecimal userId,
-            SecurityContext securityContext) throws NotFoundException {
+            SecurityContext securityContext) throws NotFoundException, SQLException {
         UserDBService.removeLike(userId, musicsheetId);
         return Response.ok().build();
     }
 
     @Override
     public Response updateMusicSheet(UpdateMusicsheetBody body, @DecimalMin("1") BigDecimal musicsheetId,
-            SecurityContext securityContext) throws NotFoundException {
-        MusicsheetDBService.updateMusicSheet(body, musicsheetId);
+            SecurityContext securityContext) throws ApiException {
+        try {
+            MusicsheetDBService.updateMusicSheet(body, musicsheetId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);        }
         return Response.ok().build();
     }
 }
