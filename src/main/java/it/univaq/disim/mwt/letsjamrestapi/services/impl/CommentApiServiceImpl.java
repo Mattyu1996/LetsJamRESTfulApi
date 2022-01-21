@@ -11,7 +11,6 @@ import javax.ws.rs.core.SecurityContext;
 
 import it.univaq.disim.mwt.letsjamrestapi.business.services.CommentDBService;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
-import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
 import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.services.CommentApiService;
@@ -19,7 +18,8 @@ import it.univaq.disim.mwt.letsjamrestapi.services.CommentApiService;
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public class CommentApiServiceImpl extends CommentApiService {
     @Override
-    public Response getCommentById( @DecimalMin("1")BigDecimal commentId, SecurityContext securityContext) throws ApiException {
+    public Response getCommentById(@DecimalMin("1") BigDecimal commentId, SecurityContext securityContext)
+            throws ApiException {
         Comment commento;
         try {
             commento = CommentDBService.getCommentById(commentId);
@@ -29,8 +29,10 @@ public class CommentApiServiceImpl extends CommentApiService {
         }
         return Response.ok().entity(commento).build();
     }
+
     @Override
-    public Response getReplies( @DecimalMin("1")BigDecimal commentId, SecurityContext securityContext) throws ApiException {
+    public Response getReplies(@DecimalMin("1") BigDecimal commentId, SecurityContext securityContext)
+            throws ApiException {
         List<Comment> commenti;
         try {
             commenti = CommentDBService.getReplies(commentId);
@@ -40,8 +42,10 @@ public class CommentApiServiceImpl extends CommentApiService {
         }
         return Response.ok().entity(commenti).build();
     }
+
     @Override
-    public Response updateComment( @DecimalMin("1")BigDecimal commentId, CommentBody body, SecurityContext securityContext) throws ApiException {
+    public Response updateComment(@DecimalMin("1") BigDecimal commentId, CommentBody body,
+            SecurityContext securityContext) throws ApiException {
         Comment commento;
         try {
             commento = CommentDBService.updateComment(commentId, body.getContent());

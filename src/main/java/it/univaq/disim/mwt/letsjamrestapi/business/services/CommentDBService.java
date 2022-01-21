@@ -62,8 +62,14 @@ public class CommentDBService {
     public static void addCommentToMusicsheet(BigDecimal musicsheetId, BigDecimal parentId, CommentBody body,
             BigDecimal userId) throws SQLException {
         Connection c = SqlDb.getConnection();
-        PreparedStatement st = c
-                .prepareStatement("INSERT INTO commenti (content, music_sheet_id, user_id) VALUES (?,?,?)");
+        PreparedStatement st;
+        if(parentId != null) {
+            st = c.prepareStatement("INSERT INTO commenti (content, music_sheet_id, user_id, parent_comment_id) VALUES (?,?,?,?)");
+            st.setLong(4, parentId.longValue());
+        }
+        else{
+            st = c.prepareStatement("INSERT INTO commenti (content, music_sheet_id, user_id) VALUES (?,?,?)");
+        } 
         st.setString(1, body.getContent());
         st.setLong(2, musicsheetId.longValue());
         st.setLong(3, userId.longValue());

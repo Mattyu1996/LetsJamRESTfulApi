@@ -122,7 +122,7 @@ public class SongDBService {
         if (pageSize != null && pageNumber != null) {
             q += "LIMIT ? OFFSET ? ";
         }
-        
+
         List<Song> brani = new ArrayList<Song>();
         PreparedStatement stmt = c.prepareStatement(q);
         int indexCounter = 0;

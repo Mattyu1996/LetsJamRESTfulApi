@@ -15,7 +15,7 @@ import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 
 public class MusicSheetDataMapper {
 
-    public static Document serialize(MusicSheetData data, BigDecimal musicsheetId){
+    public static Document serialize(MusicSheetData data, BigDecimal musicsheetId) {
         Document d = new Document();
         d.append("_id", musicsheetId.toString());
         d.append("content", data.getContent());
@@ -23,11 +23,12 @@ public class MusicSheetDataMapper {
         return d;
     }
 
-    public static MusicSheetData deserialize(Document d) throws ApiException{
+    public static MusicSheetData deserialize(Document d) throws ApiException {
         MusicSheetData data = new MusicSheetData();
         try {
             data.setContent(d.getString("content").toString());
-            Map<String, String> map = new ObjectMapper().readValue(((Document) d.get("instrumentMapping")).toJson(), HashMap.class);
+            Map<String, String> map = new ObjectMapper().readValue(((Document) d.get("instrumentMapping")).toJson(),
+                    HashMap.class);
             data.setInstrumentMapping(map);
         } catch (JsonProcessingException e) {
             e.printStackTrace();

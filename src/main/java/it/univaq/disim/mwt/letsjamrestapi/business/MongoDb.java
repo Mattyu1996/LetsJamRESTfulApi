@@ -1,9 +1,5 @@
 package it.univaq.disim.mwt.letsjamrestapi.business;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
