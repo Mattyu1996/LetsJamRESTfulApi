@@ -17,6 +17,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -83,8 +84,9 @@ public class MusicsheetApi {
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
                         @Parameter(in = ParameterIn.DEFAULT, description = "") CommentBody body,
                         @Parameter(in = ParameterIn.QUERY, description = "Id of the parent comment. Required if the new comment is a reply to another comment") @QueryParam("parent") BigDecimal parent,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws ApiException {
+                System.out.println(uriInfo.getPath());
                 return delegate.addComment(musicsheetId, body, parent, securityContext);
         }
 
@@ -104,8 +106,9 @@ public class MusicsheetApi {
         public Response addLike(
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
                 return delegate.addLike(musicsheetId, userId, securityContext);
         }
 
@@ -124,8 +127,9 @@ public class MusicsheetApi {
         })
         public Response addMusicSheet(
                         @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) NewMusicSheet body,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws SQLException, ApiException {
+                System.out.println(uriInfo.getPath());
                 return delegate.addMusicSheet(body, securityContext);
         }
 
@@ -143,8 +147,9 @@ public class MusicsheetApi {
         })
         public Response deleteMusicSheetById(
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws ApiException {
+                System.out.println(uriInfo.getPath());
                 return delegate.deleteMusicSheetById(musicsheetId, securityContext);
         }
 
@@ -162,8 +167,9 @@ public class MusicsheetApi {
         })
         public Response getMusicSheetById(
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws ApiException {
+                System.out.println(uriInfo.getPath());
                 return delegate.getMusicSheetById(musicsheetId, securityContext);
         }
 
@@ -182,8 +188,9 @@ public class MusicsheetApi {
         })
         public Response getMusicSheetComments(
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws ApiException {
+                System.out.println(uriInfo.getPath());
                 return delegate.getMusicSheetComments(musicsheetId, securityContext);
         }
 
@@ -202,8 +209,9 @@ public class MusicsheetApi {
         })
         public Response getMusicSheetData(
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws ApiException {
+                System.out.println(uriInfo.getPath());
                 return delegate.getMusicSheetData(musicsheetId, securityContext);
         }
 
@@ -223,8 +231,9 @@ public class MusicsheetApi {
         public Response removeLike(
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
                 return delegate.removeLike(musicsheetId, userId, securityContext);
         }
 
@@ -245,8 +254,9 @@ public class MusicsheetApi {
         public Response updateMusicSheet(
                         @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) UpdateMusicsheetBody body,
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
-                        @Context SecurityContext securityContext)
+                        @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws ApiException {
+                System.out.println(uriInfo.getPath());
                 return delegate.updateMusicSheet(body, musicsheetId, securityContext);
         }
 }

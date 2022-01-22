@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -71,8 +72,9 @@ public class CommentApi {
     })
     public Response getCommentById(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("commentId") BigDecimal commentId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws ApiException {
+            System.out.println(uriInfo.getPath());
         return delegate.getCommentById(commentId, securityContext);
     }
 
@@ -91,8 +93,9 @@ public class CommentApi {
     })
     public Response getReplies(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("commentId") BigDecimal commentId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws ApiException {
+            System.out.println(uriInfo.getPath());
         return delegate.getReplies(commentId, securityContext);
     }
 
@@ -112,8 +115,10 @@ public class CommentApi {
     public Response updateComment(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("commentId") BigDecimal commentId,
             @Parameter(in = ParameterIn.DEFAULT, description = "") CommentBody body,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext,
+            @Context UriInfo uriInfo)
             throws ApiException {
+            System.out.println(uriInfo.getPath());
         return delegate.updateComment(commentId, body, securityContext);
     }
 }

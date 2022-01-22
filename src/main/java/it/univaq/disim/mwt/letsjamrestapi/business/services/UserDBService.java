@@ -52,7 +52,7 @@ public class UserDBService {
 
     public static User getUserByUsername(String username) throws SQLException, NotFoundException {
         Connection c = SqlDb.getConnection();
-        PreparedStatement st = c.prepareStatement("SELECTFROM utenti where username = ?");
+        PreparedStatement st = c.prepareStatement("SELECT * FROM utenti where username = ?");
         st.setString(1, username);
         ResultSet rs = st.executeQuery();
         try {

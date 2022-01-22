@@ -21,12 +21,15 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.*;
 
 @Path("/user")
@@ -71,7 +74,7 @@ public class UserApi {
     public Response addPreferredGenre(
             @Parameter(in = ParameterIn.PATH, description = "user id", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.PATH, description = "genre id", required = true) @PathParam("genreId") BigDecimal genreId,
-            @Context SecurityContext securityContext) throws NotFoundException, SQLException {
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo) throws NotFoundException, SQLException {
         return delegate.addPreferredGenre(userId, genreId, securityContext);
     }
 
@@ -91,8 +94,9 @@ public class UserApi {
     public Response addPreferredInstrument(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("instrumentId") BigDecimal instrumentId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+                    System.out.println(uriInfo.getPath());
         return delegate.addPreferredInstrument(userId, instrumentId, securityContext);
     }
 
@@ -111,8 +115,9 @@ public class UserApi {
     })
     public Response deleteUserById(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
         return delegate.deleteUserById(userId, securityContext);
     }
     
@@ -131,8 +136,9 @@ public class UserApi {
     })
     public Response getUserById(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
         return delegate.getUserById(userId, securityContext);
     }
 
@@ -151,8 +157,9 @@ public class UserApi {
     })
     public Response getUserPreferredGenres(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
         return delegate.getUserPreferredGenres(userId, securityContext);
     }
 
@@ -171,8 +178,9 @@ public class UserApi {
     })
     public Response getUserPreferredInstruments(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
         return delegate.getUserPreferredInstruments(userId, securityContext);
     }
 
@@ -192,8 +200,9 @@ public class UserApi {
     public Response removePreferredGenre(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("genreId") BigDecimal genreId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
         return delegate.removePreferredGenre(userId, genreId, securityContext);
     }
 
@@ -212,8 +221,9 @@ public class UserApi {
     public Response removePreferredInstrument(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("instrumentId") BigDecimal instrumentId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
         return delegate.removePreferredInstrument(userId, instrumentId, securityContext);
     }
 
@@ -235,9 +245,10 @@ public class UserApi {
     public Response updateUserAvatar(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.DEFAULT, description = "") InputStream stream,
-            @Context SecurityContext securityContext)
-            throws NotFoundException, SQLException {
-        return delegate.updateUserAvatar(userId, stream, securityContext);
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo,  @Context HttpServletRequest req)
+            throws SQLException, ApiException {
+                System.out.println(uriInfo.getPath());
+        return delegate.updateUserAvatar(userId, stream, securityContext, req);
     }
 
     @PUT
@@ -257,8 +268,9 @@ public class UserApi {
     public Response updateUserById(
             @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) UpdateUserBody body,
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
         return delegate.updateUserById(body, userId, securityContext);
     }
 }

@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
 import it.univaq.disim.mwt.letsjamrestapi.business.services.UserDBService;
+import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
@@ -20,6 +23,7 @@ import it.univaq.disim.mwt.letsjamrestapi.services.UserApiService;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.annotation.Generated;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.*;
 
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
@@ -80,32 +84,37 @@ public class UserApiServiceImpl extends UserApiService {
     }
 
     @Override
-    public Response updateUserAvatar(@DecimalMin("1") BigDecimal userId, InputStream stream, SecurityContext securityContext)
-            throws NotFoundException, SQLException {
-        OutputStream os = null; 
-        User loggedUser = UserDBService.getUserById(BigDecimal.valueOf((long)4));
+    public Response updateUserAvatar(@DecimalMin("1") BigDecimal userId, InputStream stream, SecurityContext securityContext, HttpServletRequest req)
+            throws ApiException {
         try {
-            String filename = Objects.hash(loggedUser.getEmail(), loggedUser.getId())+".jpg";
-            String filepath = new File((new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\uploads\\").getCanonicalPath()), filename).getCanonicalPath();
-            File uploadFolder = new File(new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\uploads\\").getCanonicalPath());
-            if (! uploadFolder.exists()) uploadFolder.mkdir();
-            File fileToUpload = new File(filepath);
-            os = new FileOutputStream(fileToUpload);
-            byte[] b = new byte[2048];
-            int length;
-            while ((length = stream.read(b)) != -1) {
-                os.write(b, 0, length);
-            }
-            UserDBService.updateUserAvatar(userId, "/uploads/"+filename);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
+            OutputStream os = null; 
+            User loggedUser = UserDBService.getUserById(userId);
+            String appName = (req.getContextPath() != "" ) ?  req.getContextPath().substring(1) : "ROOT";
             try {
-                os.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                String filename = Objects.hash(loggedUser.getEmail(), loggedUser.getId())+".jpg";
+                Path basePath = Paths.get((new File(".")).getCanonicalPath());
+                String folderPath = basePath.toString().contains("bin") 
+                                    ? (new File(Paths.get(basePath.toString(),"..\\","webapps", appName, "uploads").toString())).getCanonicalPath()
+                                    : (new File(Paths.get(basePath.toString(),"webapps", appName, "uploads").toString())).getCanonicalPath();
+                String filePath = Paths.get(folderPath, filename).toString();
+                File uploadFolder = new File(folderPath);
+                if (! uploadFolder.exists()) uploadFolder.mkdir();
+                File fileToUpload = new File(filePath);
+                os = new FileOutputStream(fileToUpload);
+                byte[] b = new byte[2048];
+                int length;
+                while ((length = stream.read(b)) != -1) {
+                    os.write(b, 0, length);
+                }
+                UserDBService.updateUserAvatar(userId, "/uploads/"+filename);
             }
-        }
+            finally {
+                os.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ApiException(500);
+        } 
         return Response.ok().build();
     }
 

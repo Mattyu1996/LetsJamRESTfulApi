@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -77,8 +78,9 @@ public class MusicsheetsApi {
          @Parameter(in = ParameterIn.QUERY, description = "Wheater to show only musicsheets that contain tablature or not") @QueryParam("tablature") Boolean tablature,
          @Parameter(in = ParameterIn.QUERY, description = "The number of the page to skip before collect musicsheets") @QueryParam("pagenumber") BigDecimal pagenumber,
          @Parameter(in = ParameterIn.QUERY, description = "The number elements to return") @QueryParam("pagesize") BigDecimal pagesize,
-         @Context SecurityContext securityContext)
+         @Context SecurityContext securityContext, @Context UriInfo uriInfo)
          throws ApiException {
+      System.out.println(uriInfo.getPath());
       return delegate.getAllMusicSheets(search, sortby, sortdirection, genres, instruments, verified, rearranged,
             tablature, pagenumber, pagesize, securityContext);
    }

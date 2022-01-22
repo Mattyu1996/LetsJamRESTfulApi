@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -77,6 +79,7 @@ public class AuthApi {
             @Context SecurityContext securityContext,
             @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
+        System.out.println(uriInfo.getPath());
         return delegate.addUser(body, securityContext, uriInfo);
     }
 
@@ -94,6 +97,7 @@ public class AuthApi {
     public Response login(@Parameter(in = ParameterIn.DEFAULT, description = "") AuthLoginBody body,
             @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws ApiException {
+        System.out.println(uriInfo.getPath());
         return delegate.login(body, securityContext, uriInfo);
     }
 
@@ -110,6 +114,7 @@ public class AuthApi {
     })
     public Response logout(@Context SecurityContext securityContext, @Context ContainerRequestContext req)
             throws NotFoundException, SQLException {
+        System.out.println(req.getUriInfo().getPath());
         return delegate.logout(securityContext, req);
     }
 
@@ -126,6 +131,7 @@ public class AuthApi {
     })
     public Response refreshToken(@Context SecurityContext securityContext, @Context ContainerRequestContext req)
             throws NotFoundException {
+        System.out.println(req.getUriInfo().getPath());
         return delegate.refreshToken(securityContext, req);
     }
 }

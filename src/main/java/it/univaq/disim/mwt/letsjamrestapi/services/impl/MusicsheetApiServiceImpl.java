@@ -27,6 +27,7 @@ import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 import it.univaq.disim.mwt.letsjamrestapi.models.Comment;
 import it.univaq.disim.mwt.letsjamrestapi.models.CommentBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.User;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewMusicSheet;
 import it.univaq.disim.mwt.letsjamrestapi.models.Song;
 import it.univaq.disim.mwt.letsjamrestapi.services.MusicsheetApiService;
@@ -68,7 +69,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
         spartito.setHasTablature(as.hasTablature(body.getContent()));
         spartito.setTitle(body.getTitle());
         spartito.setAuthor(body.getAuthor());
-        spartito.setUser(UserDBService.getUserById(BigDecimal.valueOf((long) 4)));
+        User loggedUser = UserDBService.getUserByUsername(securityContext.getUserPrincipal().getName());
+        spartito.setUser(loggedUser);
         spartito.setRearranged(body.isRearranged());
         spartito.setVerified(false);
         spartito.setVisibility(body.isVisibility());

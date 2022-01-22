@@ -9,6 +9,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -66,8 +67,9 @@ public class UsersApi {
          @Parameter(in = ParameterIn.QUERY, description = "Username of the user to get") @QueryParam("username") String username,
          @Parameter(in = ParameterIn.QUERY, description = "Filter by user role", schema = @Schema(allowableValues = {
                "UTENTE", "AMMINISTRATORE" })) @QueryParam("role") String role,
-         @Context SecurityContext securityContext)
+         @Context SecurityContext securityContext, @Context UriInfo uriInfo)
          throws ApiException {
+         System.out.println(uriInfo.getPath());
       return delegate.getAllUsers(email, username, role, securityContext);
    }
 }

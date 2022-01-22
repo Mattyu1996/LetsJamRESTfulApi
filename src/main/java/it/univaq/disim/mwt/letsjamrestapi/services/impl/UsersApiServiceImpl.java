@@ -21,7 +21,6 @@ public class UsersApiServiceImpl extends UsersApiService {
             throws ApiException {
 
         List<User> result = new ArrayList<User>();
-
         try {
             if (email != null && !email.isEmpty()) {
                 result.add(UserDBService.getUserByEmail(email));

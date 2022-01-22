@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -67,8 +68,9 @@ public class SongApi {
    })
    public Response getSongById(
          @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("songId") BigDecimal songId,
-         @Context SecurityContext securityContext)
+         @Context SecurityContext securityContext, @Context UriInfo uriInfo)
          throws ApiException {
+      System.out.println(uriInfo.getPath());
       return delegate.getSongById(songId, securityContext);
    }
 }

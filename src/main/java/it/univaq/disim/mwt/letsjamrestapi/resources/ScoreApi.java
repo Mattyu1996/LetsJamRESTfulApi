@@ -13,6 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -72,8 +73,9 @@ public class ScoreApi {
     })
     public Response analyzeScore(
             @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) ScoreResponseBody body,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws ApiException {
+        System.out.println(uriInfo.getPath());
         return delegate.analyzeScore(body, securityContext);
     }
 
@@ -91,8 +93,9 @@ public class ScoreApi {
     })
     public Response getScoreWithOnlyParts(
             @Parameter(in = ParameterIn.DEFAULT, description = "", required = true) ScorePartsBody body,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException {
+        System.out.println(uriInfo.getPath());
         return delegate.getScoreWithOnlyParts(body, securityContext);
     }
 
@@ -108,8 +111,9 @@ public class ScoreApi {
     })
     public Response makeEmptyScore(
             @Parameter(in = ParameterIn.QUERY, description = "instrument list used to make parts in the score") @QueryParam("instruments") List<String> instruments,
-            @Context SecurityContext securityContext)
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException {
+        System.out.println(uriInfo.getPath());
         return delegate.makeEmptyScore(instruments, securityContext);
     }
 }

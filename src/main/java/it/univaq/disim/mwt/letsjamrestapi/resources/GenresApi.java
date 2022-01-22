@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -58,8 +59,9 @@ public class GenresApi {
          @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
          @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
    })
-   public Response getAllGenres(@Context SecurityContext securityContext)
+   public Response getAllGenres(@Context SecurityContext securityContext, @Context UriInfo uriInfo)
          throws ApiException {
+      System.out.println(uriInfo.getPath());
       return delegate.getAllGenres(securityContext);
    }
 }
