@@ -221,6 +221,8 @@ public class UserDBService {
         st.setString(1, avatarPath);
         st.setLong(2, userId.longValue());
         st.executeUpdate();
+        st.close();
+        c.close();
     }
 
     public static void addLike(BigDecimal userId, BigDecimal musicsheetId) throws SQLException {

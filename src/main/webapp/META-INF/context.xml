@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/letsjamrestapi">
+    <Parameter name="my-param" value="my-string-value"/>
     <Resource auth="Container" 
             driverClassName="com.mysql.cj.jdbc.Driver" 
             maxIdle="30" 
