@@ -13,7 +13,7 @@ import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 
 public class InstrumentDBService {
-    
+
     public static Instrument makeInstrument(ResultSet rs) throws SQLException {
         Instrument i = new Instrument();
         i.setId(new BigDecimal(rs.getLong("id")));
@@ -22,7 +22,7 @@ public class InstrumentDBService {
         return i;
     }
 
-    public static List<Instrument> getAllInstruments() throws SQLException{
+    public static List<Instrument> getAllInstruments() throws SQLException {
         Connection c = SqlDb.getConnection();
         List<Instrument> strumenti = new ArrayList<Instrument>();
         String query = "SELECT * FROM strumenti";
@@ -32,13 +32,18 @@ public class InstrumentDBService {
             while (rs.next()) {
                 strumenti.add(makeInstrument(rs));
             }
-            return strumenti;
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
+        return strumenti;
     }
 
-    public static List<Instrument> getMusicsheetInstruments(BigDecimal musicsheetId) throws SQLException{
+    public static List<Instrument> getMusicsheetInstruments(BigDecimal musicsheetId) throws SQLException {
         Connection c = SqlDb.getConnection();
         List<Instrument> strumenti = new ArrayList<Instrument>();
         String query = "SELECT * FROM strumenti JOIN spartiti_strumenti ON instrument_id = id WHERE music_sheet_id = ?";
@@ -49,25 +54,37 @@ public class InstrumentDBService {
             while (rs.next()) {
                 strumenti.add(makeInstrument(rs));
             }
-            return strumenti;
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
+        return strumenti;
     }
 
-    public static BigDecimal addInstrument(String name) throws SQLException{
+    public static BigDecimal addInstrument(String name) throws SQLException {
         Connection c = SqlDb.getConnection();
         String query = "INSERT INTO strumenti (name) VALUES (?)";
         PreparedStatement st = c.prepareStatement(query);
         st.setString(1, name);
-        st.executeUpdate();
-        ResultSet rs = st.getGeneratedKeys();
-        BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
-        rs.close();
-        return id;
+        try {
+            st.executeUpdate();
+            ResultSet rs = st.getGeneratedKeys();
+            BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
+            rs.close();
+            return id;
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
-    public static Instrument getInstrumentByName(String name) throws SQLException, NotFoundException{
+    public static Instrument getInstrumentByName(String name) throws SQLException, NotFoundException {
         Connection c = SqlDb.getConnection();
         String query = "SELECT * FROM strumenti WHERE name = ?";
         PreparedStatement st = c.prepareStatement(query);
@@ -78,7 +95,12 @@ public class InstrumentDBService {
                 return makeInstrument(rs);
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
         throw new NotFoundException("Instrument not found");
     }

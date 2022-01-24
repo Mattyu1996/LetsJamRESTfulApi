@@ -41,7 +41,12 @@ public class SongDBService {
                 return makeSong(rs);
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
         throw new NotFoundException("Song not found");
     }
@@ -53,10 +58,17 @@ public class SongDBService {
         st.setString(1, s.getTitle());
         st.setString(2, s.getAuthor());
         st.executeUpdate();
-        ResultSet rs = st.getGeneratedKeys();
-        BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
-        rs.close();
-        return id;
+        try {
+            ResultSet rs = st.getGeneratedKeys();
+            BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
+            rs.close();
+            return id;
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
     public static List<Song> searchSongs(
@@ -146,10 +158,19 @@ public class SongDBService {
         }
 
         ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            brani.add(makeSong(rs));
+        try {
+            while (rs.next()) {
+                brani.add(makeSong(rs));
+            }
+        } finally {
+            if (rs != null)
+                rs.close();
+            if (stmt != null)
+                stmt.close();
+            if (c != null)
+                c.close();
         }
-        rs.close();
+
         return brani;
     }
 }

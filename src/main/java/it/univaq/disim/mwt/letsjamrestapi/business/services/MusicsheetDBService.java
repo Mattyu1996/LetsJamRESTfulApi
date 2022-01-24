@@ -25,7 +25,7 @@ import it.univaq.disim.mwt.letsjamrestapi.models.MusicSheetData;
 import it.univaq.disim.mwt.letsjamrestapi.models.UpdateMusicsheetBody;
 
 public class MusicsheetDBService {
-    
+
     public static MusicSheet makeMusicsheet(ResultSet rs) throws NotFoundException, SQLException {
         MusicSheet m = new MusicSheet();
         m.setId(new BigDecimal(rs.getLong("id")));
@@ -44,7 +44,7 @@ public class MusicsheetDBService {
         return m;
     }
 
-    public static MusicSheet getMusicsheetById(BigDecimal musicsheetId) throws NotFoundException, SQLException{
+    public static MusicSheet getMusicsheetById(BigDecimal musicsheetId) throws NotFoundException, SQLException {
         Connection c = SqlDb.getConnection();
         String query = "SELECT *, (SELECT COUNT(music_sheet_id) FROM spartiti_likes WHERE music_sheet_id = ?) as likes FROM spartiti WHERE id = ?";
         PreparedStatement st = c.prepareStatement(query);
@@ -56,111 +56,123 @@ public class MusicsheetDBService {
                 return makeMusicsheet(rs);
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
         throw new NotFoundException("MusicSheet not found");
     }
 
     public static List<MusicSheet> searchMusicSheets(
-        String search, String sortBy, 
-        String sortDirection, List<String> genres, 
-        List<String> instruments, Boolean verified, 
-        Boolean rearranged, Boolean tablature, BigDecimal pageNumber, BigDecimal pageSize) throws NotFoundException, SQLException{
-        
+            String search, String sortBy,
+            String sortDirection, List<String> genres,
+            List<String> instruments, Boolean verified,
+            Boolean rearranged, Boolean tablature, BigDecimal pageNumber, BigDecimal pageSize)
+            throws NotFoundException, SQLException {
+
         Connection c = SqlDb.getConnection();
         String q = "SELECT *, (SELECT COUNT(music_sheet_id) FROM spartiti_likes WHERE music_sheet_id = spartiti.id) as likes FROM spartiti JOIN brani ON song_id = brani.id JOIN generi ON brani.genre_id = generi.id ";
-		if(!instruments.isEmpty()) q+="JOIN spartiti_strumenti ON music_sheet_id = spartiti.id JOIN strumenti ON instrument_id = strumenti.id ";
-		boolean whereClause = false;
-		
-		//SEARCH STRING
-		if(search != null && search.length() > 0){
-			q+="WHERE (spartiti.title LIKE CONCAT('%',?,'%') OR spartiti.author LIKE CONCAT('%',?,'%') OR brani.title LIKE CONCAT('%',?,'%') OR brani.author LIKE CONCAT('%',?,'%')) ";
-			whereClause = true;
-		}
-		//GENERES
-		if(!genres.isEmpty() && !whereClause){
+        if (!instruments.isEmpty())
+            q += "JOIN spartiti_strumenti ON music_sheet_id = spartiti.id JOIN strumenti ON instrument_id = strumenti.id ";
+        boolean whereClause = false;
+
+        // SEARCH STRING
+        if (search != null && search.length() > 0) {
+            q += "WHERE (spartiti.title LIKE CONCAT('%',?,'%') OR spartiti.author LIKE CONCAT('%',?,'%') OR brani.title LIKE CONCAT('%',?,'%') OR brani.author LIKE CONCAT('%',?,'%')) ";
+            whereClause = true;
+        }
+        // GENERES
+        if (!genres.isEmpty() && !whereClause) {
             q += "WHERE generi.name in (";
-            for(int i=0; i < genres.size(); i++){
-                q+=(i==genres.size()-1) ? "?" : "?,";
+            for (int i = 0; i < genres.size(); i++) {
+                q += (i == genres.size() - 1) ? "?" : "?,";
             }
-			q+=") ";
-			whereClause = true;
-		}
-		else if(!genres.isEmpty() && whereClause){
-			q += "AND generi.name in (";
-            for(int i=0; i < genres.size(); i++){
-                q+=(i==genres.size()-1) ? "?" : "?,";
+            q += ") ";
+            whereClause = true;
+        } else if (!genres.isEmpty() && whereClause) {
+            q += "AND generi.name in (";
+            for (int i = 0; i < genres.size(); i++) {
+                q += (i == genres.size() - 1) ? "?" : "?,";
             }
-			q+=") ";
-		}
+            q += ") ";
+        }
 
-		//INSTRUMENTS
-		if(!instruments.isEmpty() && !whereClause){
+        // INSTRUMENTS
+        if (!instruments.isEmpty() && !whereClause) {
             q += "WHERE strumenti.name in (";
-            for(int i=0; i < instruments.size(); i++){
-                q+=(i==instruments.size()-1) ? "?" : "?,";
+            for (int i = 0; i < instruments.size(); i++) {
+                q += (i == instruments.size() - 1) ? "?" : "?,";
             }
-			q+=") ";
-			whereClause = true;
-		}else if (!instruments.isEmpty() && whereClause){
-			q += "AND strumenti.name in (";
-            for(int i=0; i < instruments.size(); i++){
-                q+=(i==instruments.size()-1) ? "?" : "?,";
+            q += ") ";
+            whereClause = true;
+        } else if (!instruments.isEmpty() && whereClause) {
+            q += "AND strumenti.name in (";
+            for (int i = 0; i < instruments.size(); i++) {
+                q += (i == instruments.size() - 1) ? "?" : "?,";
             }
-			q+=") ";
-		}
+            q += ") ";
+        }
 
-		//VERIFIED
-		if(verified != null && !whereClause){
-			q += "WHERE verified = ? ";
-			whereClause = true;
-		}else if(verified != null && whereClause){
-			q += "AND verified = ? ";
-		}
-		//REARRANGED
-		if(rearranged != null && !whereClause){
-			q += "WHERE rearranged = ? ";
-			whereClause = true;
-		}else if(rearranged != null && whereClause){
-			q += "AND rearranged = ? ";
-		}
-        //HAS TABLATURE
-		if(tablature != null  && !whereClause){
-			q += "WHERE has_tablature = ? ";
-			whereClause = true;
-		}else if(tablature != null && whereClause){
-			q += "AND has_tablature = ? ";
-		}
-		//ORDER BY
-		if (sortBy != null){
-			q += "ORDER BY "+sortBy;
-		}
-        //SORT DIRECTION
-        if (sortDirection != null){
-			q += " "+sortDirection+" ";
-		}
-        //PAGESIZE PAGENUMBER
-        if(pageSize != null && pageNumber != null){
-            q+="LIMIT ? OFFSET ? ";
+        // VERIFIED
+        if (verified != null && !whereClause) {
+            q += "WHERE verified = ? ";
+            whereClause = true;
+        } else if (verified != null && whereClause) {
+            q += "AND verified = ? ";
         }
-        		
-		PreparedStatement stmt = c.prepareStatement(q);
+        // REARRANGED
+        if (rearranged != null && !whereClause) {
+            q += "WHERE rearranged = ? ";
+            whereClause = true;
+        } else if (rearranged != null && whereClause) {
+            q += "AND rearranged = ? ";
+        }
+        // HAS TABLATURE
+        if (tablature != null && !whereClause) {
+            q += "WHERE has_tablature = ? ";
+            whereClause = true;
+        } else if (tablature != null && whereClause) {
+            q += "AND has_tablature = ? ";
+        }
+        // ORDER BY
+        if (sortBy != null) {
+            q += "ORDER BY " + sortBy;
+        }
+        // SORT DIRECTION
+        if (sortDirection != null) {
+            q += " " + sortDirection + " ";
+        }
+        // PAGESIZE PAGENUMBER
+        if (pageSize != null && pageNumber != null) {
+            q += "LIMIT ? OFFSET ? ";
+        }
+
+        PreparedStatement stmt = c.prepareStatement(q);
         int indexCounter = 0;
-        if(search != null && search.length() > 0) {
-            for(int i=0; i < 4; i++) stmt.setString(++indexCounter, search);
+        if (search != null && search.length() > 0) {
+            for (int i = 0; i < 4; i++)
+                stmt.setString(++indexCounter, search);
         }
-        if(!genres.isEmpty()) {
-            for(int i=0; i < genres.size(); i++) stmt.setString(++indexCounter, genres.get(i));
+        if (!genres.isEmpty()) {
+            for (int i = 0; i < genres.size(); i++)
+                stmt.setString(++indexCounter, genres.get(i));
         }
-        if(!instruments.isEmpty()){
-            for(int i=0; i < instruments.size(); i++) stmt.setString(++indexCounter, instruments.get(i));
+        if (!instruments.isEmpty()) {
+            for (int i = 0; i < instruments.size(); i++)
+                stmt.setString(++indexCounter, instruments.get(i));
         }
-        if(verified != null && verified) stmt.setBoolean(++indexCounter, verified);
-        if(rearranged != null && rearranged) stmt.setBoolean(++indexCounter, rearranged);
-        if(tablature != null && tablature) stmt.setBoolean(++indexCounter, tablature);
-        if(pageSize != null && pageNumber != null){
+        if (verified != null && verified)
+            stmt.setBoolean(++indexCounter, verified);
+        if (rearranged != null && rearranged)
+            stmt.setBoolean(++indexCounter, rearranged);
+        if (tablature != null && tablature)
+            stmt.setBoolean(++indexCounter, tablature);
+        if (pageSize != null && pageNumber != null) {
             stmt.setLong(++indexCounter, pageSize.longValue());
-            stmt.setLong(++indexCounter, pageSize.longValue()*pageNumber.longValue());
+            stmt.setLong(++indexCounter, pageSize.longValue() * pageNumber.longValue());
         }
 
         List<MusicSheet> spartiti = new ArrayList<MusicSheet>();
@@ -171,11 +183,16 @@ public class MusicsheetDBService {
             }
             return spartiti;
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (stmt != null)
+                stmt.close();
+            if (c != null)
+                c.close();
         }
-	}
+    }
 
-    public static MusicSheetData getMusicsheetData(BigDecimal musicsheetId) throws ApiException{
+    public static MusicSheetData getMusicsheetData(BigDecimal musicsheetId) throws ApiException {
         MongoClient conn = MongoDb.getConnection();
         MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
         BasicDBObject query = new BasicDBObject();
@@ -186,57 +203,69 @@ public class MusicsheetDBService {
         return data;
     }
 
-    public static void addMusicSheetData(MusicSheetData data, BigDecimal musicsheetId){
+    public static void addMusicSheetData(MusicSheetData data, BigDecimal musicsheetId) {
         MongoClient conn = MongoDb.getConnection();
         MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
         collection.insertOne(MusicSheetDataMapper.serialize(data, musicsheetId));
+        conn.close();
     }
 
-    public static BigDecimal addMusicSheet(MusicSheet m) throws SQLException, NotFoundException{
+    public static BigDecimal addMusicSheet(MusicSheet m) throws SQLException, NotFoundException {
         Connection c = SqlDb.getConnection();
         String insertMusicSheetQuery = "INSERT INTO spartiti (create_date_time, title, author, user_id, song_id, rearranged, has_tablature, visibility, verified) ";
-        insertMusicSheetQuery+="VALUES(CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)";
-        PreparedStatement insertMusicSheet = c.prepareStatement(insertMusicSheetQuery, Statement.RETURN_GENERATED_KEYS);
-        insertMusicSheet.setString(1, m.getTitle());
-        insertMusicSheet.setString(2, m.getAuthor());
-        insertMusicSheet.setLong(3, m.getUser().getId().longValue());
-        insertMusicSheet.setLong(4, m.getSong().getId().longValue());
-        insertMusicSheet.setBoolean(5, m.isRearranged());
-        insertMusicSheet.setBoolean(6, m.isHasTablature());
-        insertMusicSheet.setBoolean(7, m.isVisibility());
-        insertMusicSheet.setBoolean(8, m.isVerified());
-        insertMusicSheet.executeUpdate();
-        ResultSet rs = insertMusicSheet.getGeneratedKeys();
-        BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
-        m.setId(id);
-        insertMusicSheetInstruments(m);
-        rs.close();
-        return id;
+        insertMusicSheetQuery += "VALUES(CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)";
+        PreparedStatement st = c.prepareStatement(insertMusicSheetQuery, Statement.RETURN_GENERATED_KEYS);
+        st.setString(1, m.getTitle());
+        st.setString(2, m.getAuthor());
+        st.setLong(3, m.getUser().getId().longValue());
+        st.setLong(4, m.getSong().getId().longValue());
+        st.setBoolean(5, m.isRearranged());
+        st.setBoolean(6, m.isHasTablature());
+        st.setBoolean(7, m.isVisibility());
+        st.setBoolean(8, m.isVerified());
+        try {
+            st.executeUpdate();
+            ResultSet rs = st.getGeneratedKeys();
+            BigDecimal id = (rs.next()) ? BigDecimal.valueOf(rs.getLong(1)) : null;
+            rs.close();
+            m.setId(id);
+            insertMusicSheetInstruments(m);
+            return id;
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
-    public static void insertMusicSheetInstruments(MusicSheet m) throws SQLException, NotFoundException{
+    public static void insertMusicSheetInstruments(MusicSheet m) throws SQLException, NotFoundException {
         Connection c = SqlDb.getConnection();
         String instrumentsQuery = "INSERT INTO spartiti_strumenti (music_sheet_id, instrument_id) VALUES (?,?)";
-        PreparedStatement instruments = c.prepareStatement(instrumentsQuery);
+        PreparedStatement st = c.prepareStatement(instrumentsQuery);
         List<Instrument> strumenti = m.getInstruments();
-        for(int i=0; i < strumenti.size(); i++){
-            Instrument listInstrument = strumenti.get(i);
-            Instrument dbInstrument = InstrumentDBService.getInstrumentByName(listInstrument.getName());
-            if(dbInstrument == null) {
-                listInstrument.setId(InstrumentDBService.addInstrument(listInstrument.getName())); 
+        try {
+            for (int i = 0; i < strumenti.size(); i++) {
+                Instrument listInstrument = strumenti.get(i);
+                Instrument dbInstrument = InstrumentDBService.getInstrumentByName(listInstrument.getName());
+                if (dbInstrument == null) {
+                    listInstrument.setId(InstrumentDBService.addInstrument(listInstrument.getName()));
+                } else {
+                    listInstrument = dbInstrument;
+                }
+                st.setLong(1, m.getId().longValue());
+                st.setLong(2, listInstrument.getId().longValue());
+                st.executeUpdate();
             }
-            else{
-                listInstrument = dbInstrument;
-            }
-            instruments.setLong(1, m.getId().longValue());
-            instruments.setLong(2, listInstrument.getId().longValue());
-            instruments.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
-        c.close();
     }
 
-
-    public static void deleteMusicSheet(BigDecimal musicsheetId) throws SQLException{
+    public static void deleteMusicSheet(BigDecimal musicsheetId) throws SQLException {
         Connection c = SqlDb.getConnection();
         PreparedStatement st = c.prepareStatement("DELETE FROM spartiti WHERE id = ?");
         st.setLong(1, musicsheetId.longValue());
@@ -246,28 +275,40 @@ public class MusicsheetDBService {
         st.executeUpdate();
         st = c.prepareStatement("DELETE FROM spartiti_likes WHERE music_sheet_id = ?");
         st.setLong(1, musicsheetId.longValue());
-        st.executeUpdate();
-        c.close();
-
-        MongoClient client = MongoDb.getConnection();
-        MongoCollection<Document> collection = client.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
+        MongoClient conn = MongoDb.getConnection();
+        MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
         BasicDBObject query = new BasicDBObject();
         query.append("_id", musicsheetId.toString());
         collection.deleteOne(query);
+        conn.close();
     }
 
-    public static void updateMusicSheet(UpdateMusicsheetBody body, BigDecimal musicsheetId) throws SQLException{
+    public static void updateMusicSheet(UpdateMusicsheetBody body, BigDecimal musicsheetId) throws SQLException {
         Connection c = SqlDb.getConnection();
         PreparedStatement st = c.prepareStatement("UPDATE spartiti SET title=?, author=?, visibility=? WHERE id = ?");
         st.setString(1, body.getTitle());
         st.setString(2, body.getAuthor());
         st.setBoolean(3, body.isVisibility());
         st.setLong(4, musicsheetId.longValue());
-        st.executeUpdate();
-        c.close();
-
-        MongoClient client = MongoDb.getConnection();
-        MongoCollection<Document> collection = client.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
+        
+        MongoClient conn = MongoDb.getConnection();
+        MongoCollection<Document> collection = conn.getDatabase(MongoDb.DBNAME).getCollection("spartiti");
         BasicDBObject updateField = new BasicDBObject();
         updateField.append("content", body.getContent());
         BasicDBObject update = new BasicDBObject();
@@ -275,5 +316,6 @@ public class MusicsheetDBService {
         BasicDBObject query = new BasicDBObject();
         query.append("_id", musicsheetId.toString());
         collection.findOneAndUpdate(query, update);
+        conn.close();
     }
 }

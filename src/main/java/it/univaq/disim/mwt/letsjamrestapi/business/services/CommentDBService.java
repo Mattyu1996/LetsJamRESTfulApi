@@ -37,10 +37,15 @@ public class CommentDBService {
             while (rs.next()) {
                 commenti.add(makeComment(rs));
             }
-            return commenti;
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
+        return commenti;
     }
 
     public static Comment getCommentById(BigDecimal commentId) throws NotFoundException, SQLException {
@@ -50,11 +55,16 @@ public class CommentDBService {
         st.setLong(1, commentId.longValue());
         ResultSet rs = st.executeQuery();
         try {
-            while (rs.next()) {
+            if (rs.next()) {
                 return makeComment(rs);
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
         throw new NotFoundException("Comment not found");
     }
@@ -63,19 +73,24 @@ public class CommentDBService {
             BigDecimal userId) throws SQLException {
         Connection c = SqlDb.getConnection();
         PreparedStatement st;
-        if(parentId != null) {
-            st = c.prepareStatement("INSERT INTO commenti (content, music_sheet_id, user_id, parent_comment_id) VALUES (?,?,?,?)");
+        if (parentId != null) {
+            st = c.prepareStatement(
+                    "INSERT INTO commenti (content, music_sheet_id, user_id, parent_comment_id) VALUES (?,?,?,?)");
             st.setLong(4, parentId.longValue());
-        }
-        else{
+        } else {
             st = c.prepareStatement("INSERT INTO commenti (content, music_sheet_id, user_id) VALUES (?,?,?)");
-        } 
+        }
         st.setString(1, body.getContent());
         st.setLong(2, musicsheetId.longValue());
         st.setLong(3, userId.longValue());
-        st.executeUpdate();
-        st.close();
-        c.close();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
     public static List<Comment> getReplies(BigDecimal commentId) throws NotFoundException, SQLException {
@@ -89,10 +104,15 @@ public class CommentDBService {
             while (rs.next()) {
                 commenti.add(makeComment(rs));
             }
-            return commenti;
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
+        return commenti;
     }
 
     public static Comment updateComment(BigDecimal commentId, String content) throws NotFoundException, SQLException {
@@ -100,8 +120,14 @@ public class CommentDBService {
         PreparedStatement st = c.prepareStatement("UPDATE commenti SET content = ? WHERE id = ?");
         st.setString(1, content);
         st.setLong(2, commentId.longValue());
-        st.executeUpdate();
-        st.close();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
         return getCommentById(commentId);
     }
 }

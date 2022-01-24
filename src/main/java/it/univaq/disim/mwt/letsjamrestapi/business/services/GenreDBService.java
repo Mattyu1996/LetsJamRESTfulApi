@@ -12,7 +12,7 @@ import it.univaq.disim.mwt.letsjamrestapi.business.SqlDb;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 
 public class GenreDBService {
-    
+
     public static Genre makeGenre(ResultSet rs) throws SQLException {
         Genre g = new Genre();
         g.setId(new BigDecimal(rs.getLong("id")));
@@ -21,7 +21,7 @@ public class GenreDBService {
         return g;
     }
 
-    public static List<Genre> getAllGenres() throws SQLException{
+    public static List<Genre> getAllGenres() throws SQLException {
         Connection c = SqlDb.getConnection();
         List<Genre> generi = new ArrayList<Genre>();
         String query = "SELECT * FROM generi";
@@ -31,13 +31,18 @@ public class GenreDBService {
             while (rs.next()) {
                 generi.add(makeGenre(rs));
             }
-            return generi;
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
+        return generi;
     }
-    
-    public static Genre getGenreById(BigDecimal genreId) throws SQLException{
+
+    public static Genre getGenreById(BigDecimal genreId) throws SQLException {
         Connection c = SqlDb.getConnection();
         List<Genre> generi = new ArrayList<Genre>();
         String query = "SELECT * FROM generi WHERE id = ?";
@@ -48,9 +53,14 @@ public class GenreDBService {
             while (rs.next()) {
                 generi.add(makeGenre(rs));
             }
-            return generi.get(0);
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
+        return generi.get(0);
     }
 }

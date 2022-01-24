@@ -45,7 +45,10 @@ public class UserDBService {
                 utenti.add(makeUser(rs));
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (c != null)
+                c.close();
         }
         return utenti;
     }
@@ -60,7 +63,12 @@ public class UserDBService {
                 return makeUser(rs);
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
         throw new NotFoundException("User not found");
     }
@@ -75,7 +83,12 @@ public class UserDBService {
                 return makeUser(rs);
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
         throw new NotFoundException("User not found");
     }
@@ -91,7 +104,12 @@ public class UserDBService {
                 utenti.add(makeUser(rs));
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
         return utenti;
     }
@@ -106,7 +124,12 @@ public class UserDBService {
                 return makeUser(rs);
             }
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
         throw new NotFoundException("User not found");
     }
@@ -122,8 +145,14 @@ public class UserDBService {
         st.setString(4, body.getEmail());
         st.setString(5, encoder.encode(body.getPassword()));
         st.setString(6, RoleEnum.UTENTE.toString());
-        st.executeUpdate();
-        st.close();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
         return getUserByEmail(body.getEmail());
     }
 
@@ -135,7 +164,14 @@ public class UserDBService {
         st.setString(2, body.getLastname());
         st.setString(3, body.getEmail());
         st.setLong(4, id.longValue());
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
         return getUserById(id);
     }
 
@@ -143,7 +179,15 @@ public class UserDBService {
         Connection c = SqlDb.getConnection();
         PreparedStatement st = c.prepareStatement("DELETE FROM utenti WHERE id = ?");
         st.setLong(1, id.longValue());
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
+
     }
 
     public static void removeUserPreferredGenre(BigDecimal userId, BigDecimal genreId) throws SQLException {
@@ -152,7 +196,15 @@ public class UserDBService {
                 .prepareStatement("DELETE FROM generi_preferiti WHERE user_id = ? AND genre_id = ?");
         st.setLong(1, userId.longValue());
         st.setLong(2, genreId.longValue());
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
+
     }
 
     public static void addUserPreferredGenre(BigDecimal userId, BigDecimal genreId) throws SQLException {
@@ -160,7 +212,15 @@ public class UserDBService {
         PreparedStatement st = c.prepareStatement("INSERT INTO generi_preferiti (user_id, genre_id) VALUES(?,?)");
         st.setLong(1, userId.longValue());
         st.setLong(2, genreId.longValue());
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
+
     }
 
     public static List<Genre> getUserPreferredGenres(BigDecimal id) throws SQLException {
@@ -176,7 +236,12 @@ public class UserDBService {
             }
             return generi;
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
     }
 
@@ -186,7 +251,14 @@ public class UserDBService {
                 .prepareStatement("DELETE FROM strumenti_preferiti WHERE user_id = ? AND instrument_id = ?");
         st.setLong(1, userId.longValue());
         st.setLong(2, instrumentId.longValue());
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
     public static void addUserPreferredInstrument(BigDecimal userId, BigDecimal instrumentId) throws SQLException {
@@ -195,7 +267,14 @@ public class UserDBService {
                 .prepareStatement("INSERT INTO strumenti_preferiti (user_id, instrument_id) VALUES(?,?)");
         st.setLong(1, userId.longValue());
         st.setLong(2, instrumentId.longValue());
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
     public static List<Instrument> getUserPreferredInstruments(BigDecimal id) throws SQLException {
@@ -211,7 +290,12 @@ public class UserDBService {
             }
             return strumenti;
         } finally {
-            rs.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
         }
     }
 
@@ -220,9 +304,15 @@ public class UserDBService {
         PreparedStatement st = c.prepareStatement("UPDATE utenti SET avatar = ? WHERE id = ?");
         st.setString(1, avatarPath);
         st.setLong(2, userId.longValue());
-        st.executeUpdate();
-        st.close();
-        c.close();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
+
     }
 
     public static void addLike(BigDecimal userId, BigDecimal musicsheetId) throws SQLException {
@@ -231,7 +321,14 @@ public class UserDBService {
                 .prepareStatement("INSERT INTO spartiti_likes (music_sheet_id, user_id) VALUES(?,?)");
         st.setLong(1, musicsheetId.longValue());
         st.setLong(2, userId.longValue());
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
     public static void removeLike(BigDecimal userId, BigDecimal musicsheetId) throws SQLException {
@@ -240,19 +337,35 @@ public class UserDBService {
                 .prepareStatement("DELETE FROM spartiti_likes WHERE user_id = ? AND music_sheet_id = ?");
         st.setLong(1, userId.longValue());
         st.setLong(2, musicsheetId.longValue());
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
     public static Boolean authenticateUser(String email, String password) throws SQLException, NotFoundException {
         Connection c = SqlDb.getConnection();
         PreparedStatement st = c
                 .prepareStatement("SELECT password FROM utenti WHERE email = ?");
-                st.setString(1, email);
+        st.setString(1, email);
         ResultSet rs = st.executeQuery();
-        if(rs.next()) {
-            PasswordEncoder encoder = new BCryptPasswordEncoder();
-            return encoder.matches(password, rs.getString("password"));
-        }       
+        try {
+            if (rs.next()) {
+                PasswordEncoder encoder = new BCryptPasswordEncoder();
+                return encoder.matches(password, rs.getString("password"));
+            }
+        } finally {
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
         throw new NotFoundException("User not found");
     }
 
@@ -268,7 +381,12 @@ public class UserDBService {
                     return makeUser(rs);
                 }
             } finally {
-                rs.close();
+                if (rs != null)
+                    rs.close();
+                if (st != null)
+                    st.close();
+                if (c != null)
+                    c.close();
             }
         } catch (SQLException e) {
             throw new ApiException(401);
@@ -280,7 +398,14 @@ public class UserDBService {
         Connection c = SqlDb.getConnection();
         PreparedStatement st = c.prepareStatement("DELETE FROM tokens WHERE token = ?");
         st.setString(1, token);
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 
     public static void addUserToken(BigDecimal userId, String token) throws SQLException {
@@ -288,6 +413,13 @@ public class UserDBService {
         PreparedStatement st = c.prepareStatement("INSERT INTO tokens (user_id, token) VALUES (?,?)");
         st.setLong(1, userId.longValue());
         st.setString(2, token);
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            if (st != null)
+                st.close();
+            if (c != null)
+                c.close();
+        }
     }
 }
