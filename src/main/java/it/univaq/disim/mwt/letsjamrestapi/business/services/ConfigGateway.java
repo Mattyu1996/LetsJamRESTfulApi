@@ -2,6 +2,8 @@ package it.univaq.disim.mwt.letsjamrestapi.business.services;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
@@ -10,12 +12,14 @@ public class ConfigGateway {
 
     private static String readConfig(String key) throws ApiException {
         try {
-            String filepath = new File(
-                    (new File((new File(".")).getCanonicalPath(), "..\\webapps\\letsjamrestapi\\WEB-INF\\")
-                            .getCanonicalPath()),
-                    "config.properties").getCanonicalPath();
+            String appName = "letsjamrestapi";        
+            Path basePath = Paths.get((new File(".")).getCanonicalPath());
+            String filePath = basePath.toString().contains("bin") 
+                                ? (new File(Paths.get(basePath.toString(),"..\\","webapps", appName, "WEB-INF", "config.properties").toString())).getCanonicalPath()
+                                : (new File(Paths.get(basePath.toString(),"webapps", appName, "WEB-INF", "config.properties").toString())).getCanonicalPath();
+
             Properties props = new Properties();
-            FileInputStream f = new FileInputStream(new File(filepath));
+            FileInputStream f = new FileInputStream(new File(filePath));
             props.load(f);
             String value = props.getProperty(key);
             f.close();
