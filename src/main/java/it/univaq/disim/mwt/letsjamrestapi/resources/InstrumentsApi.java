@@ -5,12 +5,15 @@ import javax.servlet.ServletConfig;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,9 +62,10 @@ public class InstrumentsApi {
          @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
          @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
    })
-   public Response getAllInstruments(@Context SecurityContext securityContext, @Context UriInfo uriInfo)
+   public Response getAllInstruments(@Context SecurityContext securityContext, @Context UriInfo uriInfo,
+         @Parameter(in = ParameterIn.QUERY, description = "") @QueryParam("name") String name)
          throws ApiException {
       System.out.println(uriInfo.getPath());
-      return delegate.getAllInstruments(securityContext);
+      return delegate.getAllInstruments(name, securityContext);
    }
 }

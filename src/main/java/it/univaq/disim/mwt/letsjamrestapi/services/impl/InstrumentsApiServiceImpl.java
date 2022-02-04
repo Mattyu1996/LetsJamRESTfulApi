@@ -15,10 +15,10 @@ import it.univaq.disim.mwt.letsjamrestapi.services.InstrumentsApiService;
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public class InstrumentsApiServiceImpl extends InstrumentsApiService {
     @Override
-    public Response getAllInstruments(SecurityContext securityContext) throws ApiException {
+    public Response getAllInstruments(String name, SecurityContext securityContext) throws ApiException {
         List<Instrument> strumenti;
         try {
-            strumenti = InstrumentDBService.getAllInstruments();
+            strumenti = InstrumentDBService.getAllInstruments(name);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ApiException(500);

@@ -13,6 +13,8 @@ import it.univaq.disim.mwt.letsjamrestapi.factories.UserApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.Genre;
 import it.univaq.disim.mwt.letsjamrestapi.models.Instrument;
 import it.univaq.disim.mwt.letsjamrestapi.models.User;
+import it.univaq.disim.mwt.letsjamrestapi.models.UserIdGenresBody;
+import it.univaq.disim.mwt.letsjamrestapi.models.UserIdInstrumentsBody;
 import it.univaq.disim.mwt.letsjamrestapi.security.AuthLevel1;
 import it.univaq.disim.mwt.letsjamrestapi.models.UpdateUserBody;
 import it.univaq.disim.mwt.letsjamrestapi.services.UserApiService;
@@ -60,7 +62,7 @@ public class UserApi {
 
     @POST
     @AuthLevel1
-    @Path("/{userId}/genres/{genreId}")
+    @Path("/{userId}/genres")
     @Produces({ "text/plain" })
     @Operation(summary = "Adds specified genre from specified user's preferred genres", description = "", security = {
             @SecurityRequirement(name = "bearerAuth") }, tags = { "user", "genre" })
@@ -73,14 +75,36 @@ public class UserApi {
     })
     public Response addPreferredGenre(
             @Parameter(in = ParameterIn.PATH, description = "user id", required = true) @PathParam("userId") BigDecimal userId,
-            @Parameter(in = ParameterIn.PATH, description = "genre id", required = true) @PathParam("genreId") BigDecimal genreId,
+            @Parameter(in = ParameterIn.DEFAULT, description = "Instrument id to add to user's preferred genre" ) UserIdGenresBody body,
             @Context SecurityContext securityContext, @Context UriInfo uriInfo) throws NotFoundException, SQLException {
-        return delegate.addPreferredGenre(userId, genreId, securityContext);
+        return delegate.addPreferredGenre(userId, body.getGenreId(), securityContext);
+    }
+
+
+    @GET
+    @AuthLevel1
+    @Path("/{userId}/instruments")
+    @Produces({ "application/json", "text/plain" })
+    @Operation(summary = "Gets user's preferred instruments", description = "", security = {
+            @SecurityRequirement(name = "bearerAuth") }, tags = { "user", "instrument" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful Operation", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Instrument.class)))),
+            @ApiResponse(responseCode = "400", description = "Invalid Id supplied"),
+            @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
+            @ApiResponse(responseCode = "404", description = "Element not found", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
+    })
+    public Response getUserPreferredInstruments(
+            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
+            throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
+        return delegate.getUserPreferredInstruments(userId, securityContext);
     }
 
     @POST
     @AuthLevel1
-    @Path("/{userId}/instruments/{instrumentId}")
+    @Path("/{userId}/instruments")
     @Produces({ "text/plain" })
     @Operation(summary = "Adds specified instrument from specified user's preferred instruments", description = "", tags = {
             "user", "instrument" })
@@ -93,11 +117,32 @@ public class UserApi {
     })
     public Response addPreferredInstrument(
             @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("instrumentId") BigDecimal instrumentId,
+            @Parameter(in = ParameterIn.DEFAULT, description = "Instrument id to add to user's preferred genre" ) UserIdInstrumentsBody body,
             @Context SecurityContext securityContext, @Context UriInfo uriInfo)
             throws NotFoundException, SQLException {
                     System.out.println(uriInfo.getPath());
-        return delegate.addPreferredInstrument(userId, instrumentId, securityContext);
+        return delegate.addPreferredInstrument(userId, body.getInstrumentId(), securityContext);
+    }
+
+    @DELETE
+    @AuthLevel1
+    @Path("/{userId}/instruments/{instrumentId}")
+    @Produces({ "text/plain" })
+    @Operation(summary = "Removes specified instrument from specified user's preferred instruments", description = "", security = {
+            @SecurityRequirement(name = "bearerAuth") }, tags = { "user", "instrument" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful Operation"),
+            @ApiResponse(responseCode = "400", description = "Invalid Id supplied"),
+            @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
+            @ApiResponse(responseCode = "404", description = "Element not found", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))) })
+    public Response removePreferredInstrument(
+            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
+            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("instrumentId") BigDecimal instrumentId,
+            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
+            throws NotFoundException, SQLException {
+                System.out.println(uriInfo.getPath());
+        return delegate.removePreferredInstrument(userId, instrumentId, securityContext);
     }
 
     @DELETE
@@ -163,27 +208,6 @@ public class UserApi {
         return delegate.getUserPreferredGenres(userId, securityContext);
     }
 
-    @GET
-    @AuthLevel1
-    @Path("/{userId}/instruments")
-    @Produces({ "application/json", "text/plain" })
-    @Operation(summary = "Gets user's preferred instruments", description = "", security = {
-            @SecurityRequirement(name = "bearerAuth") }, tags = { "user", "instrument" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful Operation", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Instrument.class)))),
-            @ApiResponse(responseCode = "400", description = "Invalid Id supplied"),
-            @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
-            @ApiResponse(responseCode = "404", description = "Element not found", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
-    })
-    public Response getUserPreferredInstruments(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
-            throws NotFoundException, SQLException {
-                System.out.println(uriInfo.getPath());
-        return delegate.getUserPreferredInstruments(userId, securityContext);
-    }
-
     @DELETE
     @AuthLevel1
     @Path("/{userId}/genres/{genreId}")
@@ -206,26 +230,7 @@ public class UserApi {
         return delegate.removePreferredGenre(userId, genreId, securityContext);
     }
 
-    @DELETE
-    @AuthLevel1
-    @Path("/{userId}/instruments/{instrumentId}")
-    @Produces({ "text/plain" })
-    @Operation(summary = "Removes specified instrument from specified user's preferred instruments", description = "", security = {
-            @SecurityRequirement(name = "bearerAuth") }, tags = { "user", "instrument" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful Operation"),
-            @ApiResponse(responseCode = "400", description = "Invalid Id supplied"),
-            @ApiResponse(responseCode = "401", description = "bearer token missing or invalid"),
-            @ApiResponse(responseCode = "404", description = "Element not found", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))) })
-    public Response removePreferredInstrument(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
-            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("instrumentId") BigDecimal instrumentId,
-            @Context SecurityContext securityContext, @Context UriInfo uriInfo)
-            throws NotFoundException, SQLException {
-                System.out.println(uriInfo.getPath());
-        return delegate.removePreferredInstrument(userId, instrumentId, securityContext);
-    }
+    
 
     @PUT
     @AuthLevel1

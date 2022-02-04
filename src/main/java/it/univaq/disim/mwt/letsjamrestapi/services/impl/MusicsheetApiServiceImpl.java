@@ -47,9 +47,10 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     }
 
     @Override
-    public Response addLike(@DecimalMin("1") BigDecimal musicsheetId, @DecimalMin("1") BigDecimal userId,
+    public Response addLike(@DecimalMin("1") BigDecimal musicsheetId,
             SecurityContext securityContext) throws NotFoundException, SQLException {
-        UserDBService.addLike(userId, musicsheetId);
+        User loggedUser = UserDBService.getUserByUsername(securityContext.getUserPrincipal().getName());
+        UserDBService.addLike(loggedUser.getId(), musicsheetId);
         return Response.ok().build();
     }
 
@@ -149,9 +150,10 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     }
 
     @Override
-    public Response removeLike(@DecimalMin("1") BigDecimal musicsheetId, @DecimalMin("1") BigDecimal userId,
+    public Response removeLike(@DecimalMin("1") BigDecimal musicsheetId,
             SecurityContext securityContext) throws NotFoundException, SQLException {
-        UserDBService.removeLike(userId, musicsheetId);
+        User loggedUser = UserDBService.getUserByUsername(securityContext.getUserPrincipal().getName());
+        UserDBService.removeLike(loggedUser.getId(), musicsheetId);
         return Response.ok().build();
     }
 

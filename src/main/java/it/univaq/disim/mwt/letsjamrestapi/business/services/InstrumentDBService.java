@@ -22,11 +22,12 @@ public class InstrumentDBService {
         return i;
     }
 
-    public static List<Instrument> getAllInstruments() throws SQLException {
+    public static List<Instrument> getAllInstruments(String name) throws SQLException {
         Connection c = SqlDb.getConnection();
         List<Instrument> strumenti = new ArrayList<Instrument>();
-        String query = "SELECT * FROM strumenti";
+        String query = ( name == null || name.isEmpty()) ? "SELECT * FROM strumenti" : "SELECT * FROM strumenti WHERE name = ?";
         PreparedStatement st = c.prepareStatement(query);
+        if(name != null && !name.isEmpty()) st.setString(1, name);
         ResultSet rs = st.executeQuery();
         try {
             while (rs.next()) {

@@ -92,7 +92,7 @@ public class MusicsheetApi {
 
         @POST
         @AuthLevel1
-        @Path("/{musicsheetId}/like/{userId}")
+        @Path("/{musicsheetId}/like")
         @Produces({ "text/plain" })
         @Operation(summary = "Add like from specified user to specified musicsheet", description = "", security = {
                         @SecurityRequirement(name = "bearerAuth") }, tags = { "musicsheet", "user" })
@@ -105,11 +105,10 @@ public class MusicsheetApi {
         })
         public Response addLike(
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
-                        @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
                         @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws NotFoundException, SQLException {
                 System.out.println(uriInfo.getPath());
-                return delegate.addLike(musicsheetId, userId, securityContext);
+                return delegate.addLike(musicsheetId, securityContext);
         }
 
         @POST
@@ -217,7 +216,7 @@ public class MusicsheetApi {
 
         @DELETE
         @AuthLevel1
-        @Path("/{musicsheetId}/like/{userId}")
+        @Path("/{musicsheetId}/like")
         @Produces({ "text/plain" })
         @Operation(summary = "Removes like from specified user to specified musicsheet", description = "", security = {
                         @SecurityRequirement(name = "bearerAuth") }, tags = { "musicsheet", "user" })
@@ -230,11 +229,10 @@ public class MusicsheetApi {
         })
         public Response removeLike(
                         @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("musicsheetId") BigDecimal musicsheetId,
-                        @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
                         @Context SecurityContext securityContext, @Context UriInfo uriInfo)
                         throws NotFoundException, SQLException {
                 System.out.println(uriInfo.getPath());
-                return delegate.removeLike(musicsheetId, userId, securityContext);
+                return delegate.removeLike(musicsheetId, securityContext);
         }
 
         @PUT

@@ -8,5 +8,5 @@ import javax.ws.rs.core.SecurityContext;
 
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2022-01-07T15:13:39.019Z[GMT]")
 public abstract class InstrumentsApiService {
-    public abstract Response getAllInstruments(SecurityContext securityContext) throws NotFoundException, ApiException;
+    public abstract Response getAllInstruments(String name, SecurityContext securityContext) throws NotFoundException, ApiException;
 }
