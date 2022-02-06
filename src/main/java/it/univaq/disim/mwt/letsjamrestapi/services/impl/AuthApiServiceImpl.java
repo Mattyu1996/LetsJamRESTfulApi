@@ -26,7 +26,7 @@ import it.univaq.disim.mwt.letsjamrestapi.services.AuthApiService;
 public class AuthApiServiceImpl extends AuthApiService {
     @Override
     public Response addUser(NewUser body, SecurityContext securityContext, UriInfo uriInfo)
-            throws NotFoundException, SQLException {
+            throws ApiException{
         User loggedUser = UserDBService.addUser(body);
         String authToken = JWTHelpers.issueToken(uriInfo, loggedUser.getUsername());
         UserDBService.addUserToken(loggedUser.getId(), authToken);
@@ -52,7 +52,7 @@ public class AuthApiServiceImpl extends AuthApiService {
 
     @Override
     public Response logout(SecurityContext securityContext, ContainerRequestContext req)
-            throws NotFoundException, SQLException {
+            throws ApiException {
         String token = req.getHeaderString(HttpHeaders.AUTHORIZATION).substring(("Bearer").length()).trim();
         UserDBService.invalidateToken(token);
         return Response.ok().build();

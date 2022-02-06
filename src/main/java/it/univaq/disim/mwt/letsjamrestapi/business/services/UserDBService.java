@@ -134,26 +134,36 @@ public class UserDBService {
         throw new NotFoundException("User not found");
     }
 
-    public static User addUser(NewUser body) throws SQLException, NotFoundException {
+    public static User addUser(NewUser body) throws ApiException {
         Connection c = SqlDb.getConnection();
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-        PreparedStatement st = c.prepareStatement(
-                "INSERT INTO utenti (username, firstname, lastname, email, password, role) VALUES (?,?,?,?,?,?)");
-        st.setString(1, body.getUsername());
-        st.setString(2, body.getFirstname());
-        st.setString(3, body.getLastname());
-        st.setString(4, body.getEmail());
-        st.setString(5, encoder.encode(body.getPassword()));
-        st.setString(6, RoleEnum.UTENTE.toString());
         try {
-            st.executeUpdate();
-        } finally {
-            if (st != null)
-                st.close();
-            if (c != null)
-                c.close();
+            PreparedStatement st = c.prepareStatement(
+                    "INSERT INTO utenti (username, firstname, lastname, email, password, role) VALUES (?,?,?,?,?,?)");
+            st.setString(1, body.getUsername());
+            st.setString(2, body.getFirstname());
+            st.setString(3, body.getLastname());
+            st.setString(4, body.getEmail());
+            st.setString(5, encoder.encode(body.getPassword()));
+            st.setString(6, RoleEnum.UTENTE.toString());
+            try {
+                st.executeUpdate();
+            } finally {
+                if (st != null)
+                    st.close();
+                if (c != null)
+                    c.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);
         }
-        return getUserByEmail(body.getEmail());
+        try {
+            return getUserByEmail(body.getEmail());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ApiException(500);
+        }
     }
 
     public static User updateUser(BigDecimal id, UpdateUserBody body) throws SQLException, NotFoundException {
@@ -394,32 +404,40 @@ public class UserDBService {
         throw new NotFoundException("User not found");
     }
 
-    public static void invalidateToken(String token) throws SQLException {
+    public static void invalidateToken(String token) throws ApiException {
         Connection c = SqlDb.getConnection();
-        PreparedStatement st = c.prepareStatement("DELETE FROM tokens WHERE token = ?");
-        st.setString(1, token);
         try {
-            st.executeUpdate();
-        } finally {
-            if (st != null)
-                st.close();
-            if (c != null)
-                c.close();
+            PreparedStatement st = c.prepareStatement("DELETE FROM tokens WHERE token = ?");
+            st.setString(1, token);
+            try {
+                st.executeUpdate();
+            } finally {
+                if (st != null)
+                    st.close();
+                if (c != null)
+                    c.close();
+            }
+        } catch (SQLException e) {
+            throw new ApiException(500);
         }
     }
 
-    public static void addUserToken(BigDecimal userId, String token) throws SQLException {
+    public static void addUserToken(BigDecimal userId, String token) throws ApiException {
         Connection c = SqlDb.getConnection();
-        PreparedStatement st = c.prepareStatement("INSERT INTO tokens (user_id, token) VALUES (?,?)");
-        st.setLong(1, userId.longValue());
-        st.setString(2, token);
         try {
-            st.executeUpdate();
-        } finally {
-            if (st != null)
-                st.close();
-            if (c != null)
-                c.close();
+            PreparedStatement st = c.prepareStatement("INSERT INTO tokens (user_id, token) VALUES (?,?)");
+            st.setLong(1, userId.longValue());
+            st.setString(2, token);
+            try {
+                st.executeUpdate();
+            } finally {
+                if (st != null)
+                    st.close();
+                if (c != null)
+                    c.close();
+            }
+        } catch (SQLException e) {
+            throw new ApiException(500);
         }
     }
 }
