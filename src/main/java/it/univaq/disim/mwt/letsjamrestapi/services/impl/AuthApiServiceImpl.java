@@ -60,11 +60,17 @@ public class AuthApiServiceImpl extends AuthApiService {
 
     @Override
     public Response refreshToken(SecurityContext securityContext, ContainerRequestContext req)
-            throws NotFoundException {
+            throws ApiException {
         String token = req.getHeaderString(HttpHeaders.AUTHORIZATION).substring(("Bearer").length()).trim();
         Key key = JWTHelpers.getInstance().getJwtKey();
         Claims jwsc = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         String newToken = JWTHelpers.issueToken(req.getUriInfo(), jwsc.getSubject());
+        try {
+            User loggedUser = UserDBService.getUserByUsername(securityContext.getUserPrincipal().getName());
+            UserDBService.updateUserToken(loggedUser.getId(), token);
+        } catch (Exception e) {
+            throw new ApiException(500);
+        }
         return Response.ok().header(HttpHeaders.AUTHORIZATION, "Bearer " + newToken).build();
     }
 }

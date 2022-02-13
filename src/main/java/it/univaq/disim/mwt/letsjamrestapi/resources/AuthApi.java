@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 import javax.annotation.Generated;
 import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -27,7 +25,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.univaq.disim.mwt.letsjamrestapi.exceptions.ApiException;
-import it.univaq.disim.mwt.letsjamrestapi.exceptions.NotFoundException;
 import it.univaq.disim.mwt.letsjamrestapi.factories.AuthApiServiceFactory;
 import it.univaq.disim.mwt.letsjamrestapi.models.AuthLoginBody;
 import it.univaq.disim.mwt.letsjamrestapi.models.NewUser;
@@ -78,7 +75,7 @@ public class AuthApi {
             @Parameter(in = ParameterIn.DEFAULT, description = "") NewUser body,
             @Context SecurityContext securityContext,
             @Context UriInfo uriInfo)
-            throws NotFoundException, SQLException {
+            throws SQLException, ApiException {
         System.out.println(uriInfo.getPath());
         return delegate.addUser(body, securityContext, uriInfo);
     }
@@ -113,7 +110,7 @@ public class AuthApi {
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     public Response logout(@Context SecurityContext securityContext, @Context ContainerRequestContext req)
-            throws NotFoundException, SQLException {
+            throws SQLException, ApiException {
         System.out.println(req.getUriInfo().getPath());
         return delegate.logout(securityContext, req);
     }
@@ -130,7 +127,7 @@ public class AuthApi {
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     public Response refreshToken(@Context SecurityContext securityContext, @Context ContainerRequestContext req)
-            throws NotFoundException {
+            throws ApiException {
         System.out.println(req.getUriInfo().getPath());
         return delegate.refreshToken(securityContext, req);
     }

@@ -20,5 +20,5 @@ public abstract class AuthApiService {
 
     public abstract Response logout(SecurityContext securityContext, ContainerRequestContext req) throws NotFoundException, SQLException, ApiException;
 
-    public abstract Response refreshToken(SecurityContext securityContext, ContainerRequestContext req) throws NotFoundException;
+    public abstract Response refreshToken(SecurityContext securityContext, ContainerRequestContext req) throws NotFoundException, ApiException;
 }

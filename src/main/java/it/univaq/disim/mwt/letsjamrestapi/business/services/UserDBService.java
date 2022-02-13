@@ -440,4 +440,24 @@ public class UserDBService {
             throw new ApiException(500);
         }
     }
+
+
+    public static void updateUserToken(BigDecimal userId, String token) throws ApiException {
+        Connection c = SqlDb.getConnection();
+        try {
+            PreparedStatement st = c.prepareStatement("UDPATE tokens SET token = ? WHERE user_id = ?");
+            st.setString(1, token);
+            st.setLong(2, userId.longValue());
+            try {
+                st.executeUpdate();
+            } finally {
+                if (st != null)
+                    st.close();
+                if (c != null)
+                    c.close();
+            }
+        } catch (SQLException e) {
+            throw new ApiException(500);
+        }
+    }
 }
