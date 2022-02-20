@@ -40,7 +40,9 @@ public class AuthApiServiceImpl extends AuthApiService {
                 User loggedUser = UserDBService.getUserByEmail(body.getEmail());
                 String authToken = JWTHelpers.issueToken(uriInfo, loggedUser.getUsername());
                 UserDBService.addUserToken(loggedUser.getId(), authToken);
-                return Response.ok().header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).build();
+                return Response.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
+                .header("loggeduser", loggedUser.getId().longValue()).build();
             }
         } catch (SQLException e) {
             e.printStackTrace();
