@@ -117,7 +117,6 @@ public class AuthApi {
 
     @GET
     @Path("/refresh")
-    @AuthLevel1
     @Produces({ "text/plain" })
     @Operation(summary = "Refreshes the jwt token without relog in again", description = "", security = {
             @SecurityRequirement(name = "bearerAuth") }, tags = { "auth" })

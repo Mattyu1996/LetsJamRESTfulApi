@@ -383,7 +383,7 @@ public class UserDBService {
         Connection c = SqlDb.getConnection();
         try {
             PreparedStatement st = c
-                    .prepareStatement("SELECT * FROM utenti JOIN tokens ON utenti.id = user_id WHERE token = ?");
+                    .prepareStatement("SELECT * FROM utenti JOIN tokens ON utenti.id = tokens.user_id WHERE token = ? LIMIT 1");
             st.setString(1, token);
             ResultSet rs = st.executeQuery();
             try {
@@ -445,7 +445,9 @@ public class UserDBService {
     public static void updateUserToken(BigDecimal userId, String token) throws ApiException {
         Connection c = SqlDb.getConnection();
         try {
-            PreparedStatement st = c.prepareStatement("UDPATE tokens SET token = ? WHERE user_id = ?");
+            System.out.println(token);
+            System.out.println(userId);
+            PreparedStatement st = c.prepareStatement("UPDATE tokens SET token = ? WHERE user_id = ?");
             st.setString(1, token);
             st.setLong(2, userId.longValue());
             try {
@@ -457,6 +459,7 @@ public class UserDBService {
                     c.close();
             }
         } catch (SQLException e) {
+            System.out.println(e.getStackTrace());
             throw new ApiException(500);
         }
     }

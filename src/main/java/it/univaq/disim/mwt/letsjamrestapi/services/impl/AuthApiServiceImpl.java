@@ -40,7 +40,6 @@ public class AuthApiServiceImpl extends AuthApiService {
                 User loggedUser = UserDBService.getUserByEmail(body.getEmail());
                 String authToken = JWTHelpers.issueToken(uriInfo, loggedUser.getUsername());
                 UserDBService.addUserToken(loggedUser.getId(), authToken);
-                System.out.println("UTENTE: "+loggedUser.getUsername()+" autenticato");
                 return Response.ok().header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).build();
             }
         } catch (SQLException e) {
@@ -64,11 +63,13 @@ public class AuthApiServiceImpl extends AuthApiService {
         String token = req.getHeaderString(HttpHeaders.AUTHORIZATION).substring(("Bearer").length()).trim();
         Key key = JWTHelpers.getInstance().getJwtKey();
         Claims jwsc = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+        String username = jwsc.getSubject();
         String newToken = JWTHelpers.issueToken(req.getUriInfo(), jwsc.getSubject());
         try {
-            User loggedUser = UserDBService.getUserByUsername(securityContext.getUserPrincipal().getName());
-            UserDBService.updateUserToken(loggedUser.getId(), token);
+            User loggedUser = UserDBService.getUserByUsername(username);
+            UserDBService.updateUserToken(loggedUser.getId(), newToken);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ApiException(500);
         }
         return Response.ok().header(HttpHeaders.AUTHORIZATION, "Bearer " + newToken).build();
