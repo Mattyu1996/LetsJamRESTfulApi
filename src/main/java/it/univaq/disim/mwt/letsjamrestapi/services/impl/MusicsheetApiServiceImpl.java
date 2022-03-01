@@ -39,7 +39,8 @@ public class MusicsheetApiServiceImpl extends MusicsheetApiService {
     public Response addComment(@DecimalMin("1") BigDecimal musicsheetId, CommentBody body,
             BigDecimal parent, SecurityContext securityContext) throws ApiException {
         try {
-            CommentDBService.addCommentToMusicsheet(musicsheetId, parent, body, BigDecimal.valueOf(4));
+            User loggedUser = UserDBService.getUserByUsername(securityContext.getUserPrincipal().getName());
+            CommentDBService.addCommentToMusicsheet(musicsheetId, parent, body, loggedUser.getId());
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ApiException(500);        }
