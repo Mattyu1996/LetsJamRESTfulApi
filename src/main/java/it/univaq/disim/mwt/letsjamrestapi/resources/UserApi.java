@@ -234,7 +234,7 @@ public class UserApi {
 
     @PUT
     @AuthLevel1
-    @Path("/{userId}/avatar")
+    @Path("/avatar")
     @Consumes({ "image/jpeg" })
     @Produces({ "application/json", "text/plain" })
     @Operation(summary = "Updates specified user's avatar", description = "", security = {
@@ -248,12 +248,11 @@ public class UserApi {
             @ApiResponse(responseCode = "500", description = "General errror occurred", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
     })
     public Response updateUserAvatar(
-            @Parameter(in = ParameterIn.PATH, description = "", required = true) @PathParam("userId") BigDecimal userId,
             @Parameter(in = ParameterIn.DEFAULT, description = "") InputStream stream,
             @Context SecurityContext securityContext, @Context UriInfo uriInfo,  @Context HttpServletRequest req)
             throws SQLException, ApiException {
                 System.out.println(uriInfo.getPath());
-        return delegate.updateUserAvatar(userId, stream, securityContext, req);
+        return delegate.updateUserAvatar(stream, securityContext, req);
     }
 
     @PUT

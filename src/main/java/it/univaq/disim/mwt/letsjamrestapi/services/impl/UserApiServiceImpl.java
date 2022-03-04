@@ -84,11 +84,11 @@ public class UserApiServiceImpl extends UserApiService {
     }
 
     @Override
-    public Response updateUserAvatar(@DecimalMin("1") BigDecimal userId, InputStream stream, SecurityContext securityContext, HttpServletRequest req)
+    public Response updateUserAvatar(InputStream stream, SecurityContext securityContext, HttpServletRequest req)
             throws ApiException {
         try {
             OutputStream os = null; 
-            User loggedUser = UserDBService.getUserById(userId);
+            User loggedUser = UserDBService.getUserByUsername(securityContext.getUserPrincipal().getName());
             String appName = (req.getContextPath() != "" ) ?  req.getContextPath().substring(1) : "ROOT";
             try {
                 String filename = Objects.hash(loggedUser.getEmail(), loggedUser.getId())+".jpg";
@@ -106,7 +106,7 @@ public class UserApiServiceImpl extends UserApiService {
                 while ((length = stream.read(b)) != -1) {
                     os.write(b, 0, length);
                 }
-                UserDBService.updateUserAvatar(userId, "/uploads/"+filename);
+                UserDBService.updateUserAvatar(loggedUser.getId(), "/uploads/"+filename);
             }
             finally {
                 os.close();

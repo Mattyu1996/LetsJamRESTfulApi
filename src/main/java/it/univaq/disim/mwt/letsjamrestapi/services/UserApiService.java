@@ -39,7 +39,7 @@ public abstract class UserApiService {
     public abstract Response removePreferredInstrument(@DecimalMin("1") BigDecimal userId,
             @DecimalMin("1") BigDecimal instrumentId, SecurityContext securityContext) throws NotFoundException, SQLException;
 
-    public abstract Response updateUserAvatar(@DecimalMin("1") BigDecimal userId, InputStream stream,
+    public abstract Response updateUserAvatar(InputStream stream,
             SecurityContext securityContext, HttpServletRequest req) throws NotFoundException, SQLException, ApiException;
 
     public abstract Response updateUserById(UpdateUserBody body, @DecimalMin("1") BigDecimal userId,

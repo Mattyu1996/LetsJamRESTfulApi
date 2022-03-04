@@ -103,7 +103,15 @@ public class ScoreAnalyzerService {
     public String getScoreAuthor(String jsonString) throws ApiException {
         try {
             JSONObject json = new JSONObject(jsonString);
-            return json.query("/score-partwise/identification/creator/content").toString();
+            JSONObject identification = (JSONObject) json.query("/score-partwise/identification/");
+            JSONArray creator = identification.optJSONArray("creator");
+            if(creator != null && creator.length() > 0){
+                for (int i = 0; i < creator.length(); i++) {
+                    String author = creator.getJSONObject(i).optString("content");
+                    if(!author.isEmpty()) return author;
+                }
+            }
+            return "";
         } catch (Exception e) {
             e.printStackTrace();
             throw new ApiException(500);
